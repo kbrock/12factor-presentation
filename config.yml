@@ -1,5 +1,5 @@
 filters:
-- "HTML::Pipeline::ShortenFilter"
+- "HTML::Pipeline::AutoAbbrFilter"
 - "HTML::Pipeline::AbbrEmojiFilter"
 - "HTML::Pipeline::MentionFilter"
 - "HTML::Pipeline::AutolinkFilter"

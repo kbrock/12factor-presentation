@@ -1,226 +1,194 @@
-<!-- https://github.com/jedcn/reveal-ck -->
+
 # 12 Factor App
 
-Immutable Infrastructure
+DISPOSABLE Immutable Infrastructure
 ---
-- Description
-- Relevence
-- Factors
-- Implications
+When||What|Who
+---|---|---|---
+2002|JAVA|<cite>*[Patterns of Enterprise Application Architecture]*</cite>|@martinfowler
+2011*|RUBY|*[12factor.net]*|@adamwiggins
+
+[heroku.com]: 2007
 ***
-## Set of Best Practices
+```notes
+Defines building blocks of distributed applications
+Describes best way to put these blocks together to form components
 
-Adam Wiggins @hirodusk
+DISPOSABLE - CHEF
 
-<small>inspiration:</small>
-
-*Patterns of Enterprise Application Architecture*
-
-@martinfowler
----
-Popular for SaaS / PaaS
-
-provider|like|strict
----|---|---
-@heroku|:+1:|YES
-@cloudfoundary|:+1:|:ballot_box_with_check:
-@openshift|:+1:|:white_medium_square:
-@docker|:+1:|:white_medium_square:
-
-*[:ballot_box_with_check:]: YES
----
-<!--
+one side: Immutable / disposable
+all focus on same building blocks of the system
+```
+```notes
+to make stateless need to cut it up
 separate code from configuration from data
-create many stateless services
-separte build from running services to get performance
+separate build from configure from running services
 
-NOTE: I mixup git and versioning
--->
-:symbols:|:abcd:|:floppy_disk:
----|---|---
-:100:|:earth_americas:|:cloud:
-:octocat:|:globe_with_meridians:|:hash:
-:construction:|:runner:|:car:
+TODO: talk about define configure: service urls, # runners, 
+
+service, runner, build, deploy has own (docker), config (machines), data (# runners)
+```
+SEPARATE|MANY|STATELESS|SERVICE
+---|---|---|---
+SEPARATE|CODE|CONFIG|DATA
+SEPARATE|BUILD|DEPLOY|RUNNER
+SERVICE|URL|VERSION_NUMBER|GIT
+CONFIG|SCALE|URL|
 ***
 ***
-We are a big enterprise application
-
-forget @docker
-
-shift **towards** service and components
-
-follow an approperiate methodology
----
-:person_with_blond_hair:||:+1:
----|---|---
-:abcd:|:earth_americas:|install / upgrade <small>U/X</small>
-:abcd:|:floppy_disk:|multi tenancy
-:100:|:cloud:|simplify <small>technical debt</small>
-:cloud:|:lock:|security
-:girl:|:grey_question:|:+1:
----
-### Just add Salt
-
-Ask|&nbsp;
----|---
-*Follow 100%?*|:white_medium_square:
-*Why deviate?*|:ballot_box_with_check:
-***
-***
-# I. :symbols: Codebase 
+# I. CODE Codebase 
 One codebase tracked in revision control, many deploys
 ---
-<!-- one app, code, repo, version
-upgrading service
-:two:|:hash:|<small>upgrades</small>
--->
-:one:|:cloud:|&nbsp;
+ONE|SERVICE|&nbsp;
 ---|---|---
-:one:|:symbols:
-:one:|:octocat:
-:one:|:hash:|
+ONE|CODE
+ONE|GIT
+ONE|VERSION_NUMBER|
 ---
-&nbsp;|build|`console`|vmdb|:100:
+&nbsp;|build|`console`|vmdb|MANY
 ---|---|---|---|---
-upstream|:octocat:|:octocat:|:octocat:|:octocat:
-downstream|:octocat:|:octocat:|:octocat:|:octocat:
+upstream|GIT|GIT|GIT|GIT
+downstream|GIT|GIT|GIT|GIT
 
-:tv: :computer:   [X. parity](#/13)
+APPLIANCE COMPUTER   [X. parity](#/13)
 ---
-&nbsp;|build|`console`|vmdb|:100:
+&nbsp;|build|`console`|vmdb|MANY
 ---|---|---|---|---
-:person_with_blond_hair:|:ballot_box_with_check:|:white_medium_square:|:white_medium_square:|:white_medium_square:
-:girl:|:white_medium_square:|:ballot_box_with_check:|:white_medium_square:|:white_medium_square:
-:construction_worker:|:ballot_box_with_check:|:ballot_box_with_check:|:ballot_box_with_check:|:ballot_box_with_check:
+ME|NO|YES|NO|NO
+YOU|NO|NO|YES|NO
+OTHERS|YES|YES|YES|YES
 ***
 ***
-# II. :hash: Dependencies
+# II. VERSION_NUMBER Dependencies
 Explicitly declare and isolate dependencies
 ---
-<!-- code vs config vs data
+```notes
+ code vs config vs data
  tmpl.yml (customer changes) schema
 hard to declare config in db / yml dependency
 hard to declare data dependencies
 tmpl.yml is changed
--->
-type||example|:octocat:
+```
+type||example|VERSION_NUMBER
 ---|---|---|---
-:symbols:|:tv:|`kickstart`, `rpm`|:+1:
-:symbols:|:cloud:|`Gemfile`|:+1:
-:abcd:||`ENV[]`, `/defaults`|:+1:
-:floppy_disk:|:hash:|`schema.rb`|:-1:
-:abcd:|:floppy_disk:|`tmpl.yml`<small>(migrations)<small>|:-1:
-:abcd:|:file_folder:|`tmpl.yml` <small>(change)<small>|:-1:
+CODE|APPLIANCE|`kickstart`, `rpm`|LIKE
+CODE|SERVICE|`Gemfile`|LIKE
+CONFIG||`ENV[]`, `/defaults`|LIKE
+DATA|VERSION_NUMBER|`schema.rb`|DISLIKE
+CONFIG|DATA|`tmpl.yml`<small>(migrations)<small>|DISLIKE
+CONFIG|FILE|`tmpl.yml` <small>(change)<small>|DISLIKE
 ***
 ***
-# III. :abcd: Config
+# III. CONFIG Config
 
 Store config in the environment
 ---
-<!-- separation is most important part
+```notes
+separation is most important part
 perils of overwriting
 avoid bulk build time vs runtime
-build time vs runtime -->
-:abcd:|:symbols:|:metal:
+build time vs runtime
+```
+CONFIG|CODE|WIN
 ---|---|---
-:abcd:|:octocat:|<small>migrations too</small>
-:100:|:file_folder:|`ENV[]`?
-:abcd:|:black_joker:|Unchanging
-:abcd:|:100:|avoid `RAILS_ENV`
-:construction:|:tv:|`APACHE_VER`
+CONFIG|GIT|<small>migrations too</small>
+MANY|FILE|`ENV[]`?
+CONFIG|CHANGING|Unchanging
+CONFIG|MANY|avoid `RAILS_ENV`
+BUILD|APPLIANCE|`APACHE_VER`
 
 ***
 ***
-# IV. :cloud: Backing Services
+# IV. SERVICE Backing Services
 
 Treat backing services as attached resources
 ---
-<!--
+```notes
   they have urls, versioned, and discoverable
   cut into many services by functionality
--->
-:cloud:|:globe_with_meridians:|&nbsp;
+```
+SERVICE|URL|&nbsp;
 ---|---|---
-:cloud:|:hash:
-:cloud:|:notebook:|`DNS`
-:100:|:cloud:|:symbols:
+SERVICE|VERSION_NUMBER
+SERVICE|DISCOVERY|`DNS`
+MANY|SERVICE|CODE
 ---
-<!--
+```notes
 lots of forks - are versionable
 more performant to move to url model?
 a few files - hard to version / declare dependencies
 makes sense to convert to config or data
--->
-:fork_and_knife:|:hash:|:+1:
+```
+FORK|VERSION_NUMBER|LIKE
 ---|---|---
-&nbsp;|:globe_with_meridians:|:car:
-:file_folder:|:hash:|:-1:
-&nbsp;|:abcd:|:hash:
-:bus:|:hash:|:-1:
+&nbsp;|URL|SCALE
+FILE|VERSION_NUMBER|DISLIKE
+&nbsp;|CONFIG|VERSION_NUMBER
+MESSAGE BUS|VERSION_NUMBER|DISLIKE
 ---
-:100:|:cloud:|:musical_note:
+MANY|SERVICE|GROOVE
 ---|---|---
-&nbsp;|:musical_note:|core competency?
-:cloud:|:recycle:|standards
+&nbsp;|GROOVE|core competency?
+SERVICE|DISPOSABLE|standards
 ---
-<!--
-    What doe these services look like?
+```notes
+    What does these services look like?
     not a whole appliance
--->
-:cloud:|:grey_question:|&nbsp;
----|---|---
-:tv:|:-1:|:construction:
-:runner:|:+1:
-:construction_worker:|:+1:|worker
-:wrench:|:+1:|console
-:wrench:|:+1:|automate
+```
+SERVICE|UNKNOWN
+---|---
+APPLIANCE|DISLIKE
+RUNNER|LIKE
+WORKER|LIKE
+console|LIKE
+automate|LIKE
 
 service or component
 
 ***
 ***
-### V. :construction: Build, :octocat: release, :runner: run
+### V. BUILD Build, DEPLOY release, RUNNER run
 
 Strictly separate build and run stages
 ---
-:construction:|:cloud:|:abcd:|just works
+BUILD|SERVICE|CONFIG|just works
 ---|---|---|---
-:symbols:|:page_facing_up:|:+1:|`rake asset:build`
-:symbols:|:gem:|:+1:|gem install
-:file_folder:|:art:|:+1:|branding
-:file_folder:|:art:|:+1:|`custom_report.yml`
-:file_folder:|:abcd:|:+1:|Custom properties
+CODE|ASSETS|LIKE|`rake asset:build`
+CODE|RUBY|LIKE|gem install
+FILE|CUSTOM|LIKE|branding
+FILE|CUSTOM|LIKE|`custom_report.yml`
+FILE|CONFIG|LIKE|Custom properties
 ---
-<!--
+```notes
 when running, no customization, upgrading
 
--->
-:runner:|:car:|&nbsp;|&nbsp;
+```
+RUNNER|SCALE|&nbsp;|&nbsp;
 ---|---|---|---
-:symbols:|:hash:|:-1:|rpm upgrade
-:symbols:|:gem:|:-1:| gem install
-:file_folder:|:art:|:-1:|branding
-:file_folder:|:abcd:|:-1:|self modifying
-:lock:|:cop:|:+1:
+CODE|VERSION_NUMBER|DISLIKE|rpm upgrade
+CODE|RUBY|DISLIKE| gem install
+FILE|CUSTOM|DISLIKE|branding
+FILE|CONFIG|DISLIKE|self modifying
+SECURITY|ROOT|LIKE
 
 
 ***
 ***
-# VI. :earth_americas: Processes
+# VI. STATELESS Processes
 
 Execute the app as one or more stateless processes
 ---
-<!--
+```notes
 service is stateless
 state goes to data or config
 applinace is stateless (if appliance is a service vs runner)
--->
+```
 
-:cloud:|:earth_americas:||:abcd:|:floppy_disk:
+SERVICE|STATELESS||CONFIG|DATA
 ---|---|---|---|---
-:tv:|:earth_americas:||:abcd:|:grey_question:
+APPLIANCE|STATELESS||CONFIG|UNKNOWN
 ---
-<!--
+```notes
     rolling upgrades - multiple versions hard
     when there is state, even harder
 
@@ -229,16 +197,16 @@ applinace is stateless (if appliance is a service vs runner)
     upgrade database hard (urls may help)
 
     
--->
-:hash:|:hash:|:frowning:|&nbsp;
+```
+VERSION_NUMBER|VERSION_NUMBER|UNHAPPY|&nbsp;
 ---|---|---|---|---
-:cloud:|:floppy_disk:|:frowning:|:frowning:
-:cloud:|:earth_americas:|:grinning:
-:cloud:|:floppy_disk:|:hash:
-:floppy_disk:|:globe_with_meridians:|:hash:|:hash:
-:hash:|:hash:|:grinning:
+SERVICE|DATA|UNHAPPY|UNHAPPY
+SERVICE|STATELESS|HAPPY
+SERVICE|DATA|VERSION_NUMBER
+DATA|URL|VERSION_NUMBER|VERSION_NUMBER
+VERSION_NUMBER|VERSION_NUMBER|HAPPY
 ---
-<!--
+```notes
 What can change?
 putting state into database
 
@@ -248,81 +216,83 @@ code drived by config is versioned
 data in database is not well versioned migrations are crude
 (have to reimplement) - automate
 should only boot once
--->
-:earth_americas:||change?|:hash:|&nbsp;
+```
+STATELESS||change?|VERSION_NUMBER|&nbsp;
 ---|---|---|---|---
-:symbols:|:file_folder:|:construction:|:ballot_box_with_check:
-:abcd:|cloud-init|:one:|:ballot_box_with_check:|:symbols:
-:floppy_disk:|database|:ballot_box_with_check:|:white_medium_square:|migrations
-:abcd:|:floppy_disk:|:ballot_box_with_check:|:white_medium_square:|etcd
-:symbols:|:floppy_disk:|:ballot_box_with_check:|:white_medium_square:|automate
+CODE|FILE|BUILD|YES
+CONFIG|cloud-init|ONE|YES|CODE
+DATA|database|YES|NO|migrations
+CONFIG|DATA|YES|NO|etcd
+CODE|DATA|YES|NO|automate
 ***
 ***
-# VII. :globe_with_meridians: Port binding
+# VII. URL Port binding
 
 Export services via port binding
 ---
-<!--
-    use dns over mod_rewrite
--->
-:globe_with_meridians:|:ballot_box_with_check:
----|---
-:wrench:|:bus:
-:wrench:|:fork_and_knife:
-:wrench:|:file_folder:
-:notebook:|`DNS`
+```notes
+    prefer dns over mod_rewrite
+```
+URL|YES|&nbsp;
+---|---|---
+MESSAGE BUS|NO
+FORK|NO
+FILE|NO
+DISCOVERY|YES|`DNS`
 ***
 ***
-# VIII. :car: Concurrency
+# VIII. SCALE Concurrency
 
 Scale out via the process model
 ---
-<!--
+```notes
 can fork, but new processes (new boxes) important
--->
-:car:|&nbsp;|&nbsp;
+```
+SCALE|&nbsp;|&nbsp;
 ---|---|---
-:cloud:|:fork_and_knife:
-:cloud:|:computer:|:computer:
+SERVICE|FORK
+SERVICE|COMPUTER|COMPUTER
 ---
-<!--
+```notes
 separate service from runner
 pids are job of runner
--->
-:cloud:|:runner:
+```
+SERVICE|RUNNER
 ---|---
-`PID`|:-1:
+`PID`|DISLIKE
 ***
 ***
-# IX. :recycle: Disposability
+# IX. DISPOSABLE Disposability
 
 Maximize robustness with fast startup and graceful shutdown
 ---
-<!--
+```notes
 easy to discover / add workers (and remove)
 capacity planning - react to dynamic load
     Pet vs Cattle
--->
-:car:|:+1:|startup instantly
+```
+&nbsp;|SCALE|&nbps;
 ---|---|---
-:bathtub:|:-1:|no cleanup
-:chart_with_upwards_trend:|:+1:|dynamic load
-:dog:|:-1:|:cat:
-:cow:|:+1:
+&nbsp;|YES|startup instantly
+CLEANUP|NO
+METRICS|YES|dynamic load
+PET|NO
+PET2|NO
+DISPOSABLE|YES
 ---
-<!--
+```notes
 guid locks an image to work
 no one else can come in
 want to discover and do work easily
 separate runner from worker
 simplify specification of work
--->
-:car:||:cow:
+```
+SCALE||DISPOSABLE
 ---|---|---
-:abcd:|`GUID`|:dog:
-:abcd:|:file_folder:|:dog:
-:runner:|:construction_worker:|:cow:
-:notebook:|:construction_worker:|:cow:
+CONFIG|`GUID`|PET
+CONFIG|FILE|PET
+RUNNER|WORKER|DISPOSABLE
+DISCOVERY|WORKER|DISPOSABLE
 
 region/zone/capability
 ***
@@ -336,34 +306,33 @@ dev|prod
 postgres|postgres
 rack|apache
 rails|rake / service
-simulate|:construction_worker:
-postgres|IdM, AD, LDAP
-git|rpm
+simulate|WORKER
+postgres|IdM, AD, LDAP, postgres
+GIT|rpm
 rake|appliance_console
 nope|replication
 ---
-<!--
+```notes
 Use same scripts for build, qa, and dev
 
-dog food
--->
+```
 qe|prod
 ---|---
-:tv:|:tv:
+APPLIANCE|APPLIANCE
 python|`appliance_console`
-:dog:|:bento:
+PET|FOOD
 ***
 ***
-# XI. :evergreen_tree: Logs
+# XI. LOGS Logs
 
 Treat logs as event streams
 ---
-:evergreen_tree:|&nbsp;
+LOGS|&nbsp;
 ---|---
 `miq_top`|splunk
 `/var/log/httpd/`|RHCI
 vmware events|event collector
-:chart_with_upwards_trend:|define normal
+METRICS|define normal
 
 ***
 ***
@@ -377,47 +346,91 @@ Not saying 100% polished ruby, do bash
 
 e.g.: sql in production -> migration
 ***
-:person_with_blond_hair:
-
-multi-tenancy: moving more config into data
-***
-image|term
----|---
-:symbols:|code
-:abcd:|config
-:floppy_disk:|data
-:tv:|appliance
-:cloud:|service
-:file_folder:|file on disk
----
-image|term
----|---
-:person_with_blond_hair:|developer
-:girl:|developer
-:construction_worker:|jason
-:construction:|build
-:cop:|root user
-:octocat:|git
----
-image|term
----|---
-:hash:|version number
-:globe_with_meridians:|url
-:notebook:|lookup (dns)
-:bus:|message queue
-:car:|scale
-:earth_americas:|stateless
----
-image|term
----|---
-:construction_worker:|worker
-:wrench:|console
-:wrench:|tool
-:recycle:|disposable
----
 # Refs
-- [12factor app](http://12factor.net/)
-- [immutable infrastructure](http://chadfowler.com/blog/2013/06/23/immutable-deployments/)
+- [12factor.net] from [heroku.com]
+- [Immutable Infrastructure]
 - [Pivotal podcast](http://www.paasmag.com/2014/11/19/all-things-pivotal-episode-7-a-look-at-12-factor-apps/)
 - [docker 12 factor](http://www.slideshare.net/williamyeh/12-factor-app-from-dockers-point-of-view)
-***
+- [reveal-ck](https://github.com/jedcn/reveal-ck) slides
+---
+```notes    
+? hear no evil, see no evil, say no evil
+? ticket, train station, fuelpump
+? scisors vs barber
+*[::]: TERMINAL (console)
+*[:trollface:]: ENEMY/BAD - :snake: :bomb: (do WIN instead)
+*[:checkered_flag:]: end goal?
+FIX: dog food (not pet + food)
+FIX: runner (not runner)
+FIX: deploy (not wrench)
+ALT changing:  / wild / joker / slotmachine
+DELETE: gem / art / assets / cleanup
+DELETE: computer vs developer (maybe use appliance instead?)
+
+MERGE: groove -> win -> 
+MERGE: like/dislike -> yes/no OR good/bad?
+MERGE: happy/unhappy -> like/dislike -> good/bad?
+MERGE: STATE -> DOG ?
+MERGE: STATELESS -> CATTLE ?
+overloading:
+appliance: app, web app, appliance (runner or aggregate service?)
+service: component, service, exe
+scale: scale, concurrency, performance
+ruby: gem, ruby, web tech
+constrain: Lock down, secure, constrain
+``` 
+
+*[:ballot_box_with_check:]: YES
+*[:white_medium_square:]: NO
+*[:+1:]: LIKE
+*[:-1:]: DISLIKE
+*[:construction_worker:]: WORKER
+*[:symbols:]: CODE
+*[:abcd:]: CONFIG
+*[:dvd:]: DATA
+*[:earth_americas:]: STATELESS
+*[:cloud:]: SERVICE
+*[:put_litter_in_its_place:]: DISPOSABLE
+*[:octocat:]: GIT
+*[:hash:]: VERSION\_NUMBER
+*[:globe_with_meridians:]: URL
+*[:runner:]: RUNNER
+*[:wrench:]: DEPLOY
+*[:one:]: ONE
+*[:100:]: MANY
+*[:construction:]: BUILD
+*[:rocket:]: SCALE
+*[:tv:]: APPLIANCE
+*[:cow:]: DISPOSABLE
+*[:dog:]: PET
+*[:cat:]: PET2
+*[:bento:]: FOOD
+*[:person_with_blond_hair:]: ME
+*[:girl:]: YOU
+*[:boy:]: OTHERS
+*[:cop:]: ROOT
+*[:bus:]: MESSAGE BUS
+*[:file_folder:]: FILE
+*[:notebook:]: DISCOVERY
+*[:chart_with_upwards_trend:]: METRICS
+*[:fork\_with\_knife:]: FORK
+*[:black_joker:]: CHANGING
+*[:metal:]: WIN
+*[:computer:]: COMPUTER
+*[:frowning:]: UNHAPPY
+*[:musical_note:]: GROOVE
+*[:gem:]: RUBY
+*[:hotsprings:]: JAVA
+*[:page_facing_up:]: ASSETS
+*[:art:]: CUSTOM
+*[:grey_question:]: UNKNOWN
+*[:evergreen_tree:]: LOGS
+*[:lock:]: CONSTRAINT
+*[:grining:]: HAPPY
+*[:bathtub:]: CLEANUP
+*[:scissors:]: SEPARATE
+
+[Patterns of Enterprise Application Architecture]: http://amzn.com/0321127420
+[12factor.net]: http://12factor.net
+[heroku.com]: http://heroku.com/
+[Immutable Infrastructure]: http://chadfowler.com/blog/2013/06/23/immutable-deployments/
