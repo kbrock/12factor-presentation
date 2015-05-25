@@ -1,6 +1,6 @@
 #!/bin/bash
 if [ $# -eq 0 ] ; then
-op="generate -d 12factor"
+op="generate"
 fi
 
-bundle exec reveal-ck ${op} "$@" -f 12factor.md 
+bundle exec reveal-ck ${op} "$@"

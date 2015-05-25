@@ -5,9 +5,9 @@ DISPOSABLE Disposable Infrastructure
 ---
 When||What|Who
 ---|---|---|---
-2002|JAVA|<cite>*[Patterns of Enterprise Application Architecture]*</cite>|@martinfowler
+2002|JAVA|<cite>[Patterns of Enterprise Application Architecture]</cite>|@martinfowler
 2007||*[heroku.com]*
-2011|RUBY|*[12factor.net]*|@adamwiggins
+2011|RUBY|<cite>[12factor.net]</cite>|@adamwiggins
 
 ***
 ```notes
@@ -323,11 +323,11 @@ python|`appliance_console`
 PET|FOOD
 ***
 ***
-# XI. LOGS Logs
+# XI. METRICS Logs
 
 Treat logs as event streams
 ---
-LOGS|&nbsp;
+METRICS|&nbsp;
 ---|---
 `miq_top`|splunk
 `/var/log/httpd/`|RHCI
@@ -412,7 +412,7 @@ constrain: Lock down, secure, constrain
 *[:file_folder:]: FILE
 *[:notebook:]: DISCOVERY
 *[:chart_with_upwards_trend:]: METRICS
-*[:fork\_with\_knife:]: FORK
+*[:fork_and_knife:]: FORK
 *[:black_joker:]: CHANGING
 *[:metal:]: WIN
 *[:computer:]: COMPUTER
@@ -423,7 +423,6 @@ constrain: Lock down, secure, constrain
 *[:page_facing_up:]: ASSETS
 *[:art:]: CUSTOM
 *[:grey_question:]: UNKNOWN
-*[:evergreen_tree:]: LOGS
 *[:lock:]: CONSTRAINT
 *[:grining:]: HAPPY
 *[:bathtub:]: CLEANUP
