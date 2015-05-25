@@ -3,58 +3,45 @@
 
 DISPOSABLE Disposable Infrastructure
 ---
+```notes
+In 2002 Martin Fowler write about the building blocks of distributed applications.
+In 2011(?) Adam Wiggins tuned it with more opinions and more web focused.
+Since Heroku was founded in 2007, I'm questioning the git log
+```
 When||What|Who
 ---|---|---|---
 2002|JAVA|<cite>[Patterns of Enterprise Application Architecture]</cite>|@martinfowler
 2007||*[heroku.com]*
-2011|RUBY|<cite>[12factor.net]</cite>|@adamwiggins
-
+2011|RUBY|<cite>[12factor.net]</cite> <small>[git][12factor-gh]</small>|@adamwiggins
 ***
 ```notes
-Defines building blocks of distributed applications
-Describes best way to put these blocks together to form components
-
-DISPOSABLE - CHEF
-
-one side: Immutable / disposable
-all focus on same building blocks of the system
-```
-```notes
-to make stateless need to cut it up
-separate code from configuration from data
-separate build from configure from running services
-
 TODO: talk about define configure: service urls, # runners, 
-
 service, runner, build, deploy has own (docker), config (machines), data (# runners)
 ```
-SEPARATE|MANY|STATELESS|SERVICE
+MANY|DISPOSABLE|SERVICE|&nbsp;
 ---|---|---|---
-SEPARATE|CODE|CONFIG|DATA
-SEPARATE|BUILD|DEPLOY|RUNNER
-SERVICE|URL|VERSION_NUMBER|GIT
-CONFIG|SCALE|URL|
+URL|GIT|VERSION_NUMBER
+CODE|CONFIG|DATA|STATELESS
+BUILD|DEPLOY|RUNNER|SCALE
+MEASURE|DOGFOOD
 ***
 ***
 # I. CODE Codebase 
 One codebase tracked in revision control, many deploys
 ---
-ONE|SERVICE|&nbsp;
----|---|---
-ONE|CODE
-ONE|GIT
-ONE|VERSION_NUMBER|
+ONE|SERVICE
+---|---
+URL|VERSION_NUMBER
+CODE|GIT
 ---
 &nbsp;|build|`console`|vmdb|MANY
 ---|---|---|---|---
 upstream|GIT|GIT|GIT|GIT
 downstream|GIT|GIT|GIT|GIT
-
-APPLIANCE COMPUTER   [X. parity](#/13)
 ---
 &nbsp;|build|`console`|vmdb|MANY
 ---|---|---|---|---
-ME|NO|YES|NO|NO
+ME|NO|YES|YES|NO
 YOU|NO|NO|YES|NO
 OTHERS|YES|YES|YES|YES
 ***
@@ -69,14 +56,14 @@ hard to declare config in db / yml dependency
 hard to declare data dependencies
 tmpl.yml is changed
 ```
-type||example|VERSION_NUMBER
----|---|---|---
-CODE|APPLIANCE|`kickstart`, `rpm`|LIKE
-CODE|SERVICE|`Gemfile`|LIKE
-CONFIG||`ENV[]`, `/defaults`|LIKE
-DATA|VERSION_NUMBER|`schema.rb`|DISLIKE
-CONFIG|DATA|`tmpl.yml`<small>(migrations)<small>|DISLIKE
-CONFIG|FILE|`tmpl.yml` <small>(change)<small>|DISLIKE
+where|type||example|VERSION_NUMBER
+---|---|---|---|---
+FILE|CODE|APPLIANCE|`kickstart`, `rpm`|YES
+FILE|CODE|SERVICE|`Gemfile`|YES
+FILE|CONFIG||`ENV[]`, `/defaults`|YES
+CONFIG|FILE||`tmpl.yml` <small>(change)<small>|NO
+FILE|DATA||`schema.rb`|NO
+CONFIG|DATA||`tmpl.yml`<small>(migrations)<small>|NO
 ***
 ***
 # III. CONFIG Config
@@ -275,7 +262,7 @@ capacity planning - react to dynamic load
 ---|---|---
 &nbsp;|YES|startup instantly
 CLEANUP|NO
-METRICS|YES|dynamic load
+MEASURE|YES|dynamic load
 PET|NO
 PET2|NO
 DISPOSABLE|YES
@@ -297,7 +284,7 @@ DISCOVERY|WORKER|DISPOSABLE
 region/zone/capability
 ***
 ***
-# X. Dev/prod parity
+# X. DOGFOOD Dev/prod parity
 
 Keep development, staging, and production as similar as possible
 ---
@@ -320,19 +307,19 @@ qe|prod
 ---|---
 APPLIANCE|APPLIANCE
 python|`appliance_console`
-PET|FOOD
+DOGFOOD
 ***
 ***
-# XI. METRICS Logs
+# XI. MEASURE Logs
 
 Treat logs as event streams
 ---
-METRICS|&nbsp;
+MEASURE|&nbsp;
 ---|---
 `miq_top`|splunk
 `/var/log/httpd/`|RHCI
 vmware events|event collector
-METRICS|define normal
+MEASURE|define normal
 
 ***
 ***
@@ -360,7 +347,7 @@ e.g.: sql in production -> migration
 *[::]: TERMINAL (console)
 *[:trollface:]: ENEMY/BAD - :snake: :bomb: (do WIN instead)
 *[:checkered_flag:]: end goal?
-FIX: dog food (not pet + food)
+FIX: dogfood
 FIX: runner (not runner)
 FIX: deploy (not wrench)
 ALT changing:  / wild / joker / slotmachine
@@ -403,15 +390,15 @@ constrain: Lock down, secure, constrain
 *[:cow:]: DISPOSABLE
 *[:dog:]: PET
 *[:cat:]: PET2
-*[:bento:]: FOOD
-*[:person_with_blond_hair:]: ME
+*[:bento:]: DOGFOOD
+*[:boy:]: ME
 *[:girl:]: YOU
-*[:boy:]: OTHERS
+*[:person_with_blond_hair:]: OTHERS
 *[:cop:]: ROOT
 *[:bus:]: MESSAGE BUS
 *[:file_folder:]: FILE
 *[:notebook:]: DISCOVERY
-*[:chart_with_upwards_trend:]: METRICS
+*[:chart_with_upwards_trend:]: MEASURE
 *[:fork_and_knife:]: FORK
 *[:black_joker:]: CHANGING
 *[:metal:]: WIN
@@ -430,5 +417,6 @@ constrain: Lock down, secure, constrain
 
 [Patterns of Enterprise Application Architecture]: http://amzn.com/0321127420
 [12factor.net]: http://12factor.net
+[12factor-gh]: https://github.com/heroku/12factor
 [heroku.com]: http://heroku.com/
 [Immutable Infrastructure]: http://chadfowler.com/blog/2013/06/23/immutable-deployments/
