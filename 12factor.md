@@ -1,14 +1,14 @@
 
 # 12 Factor App
 
-DISPOSABLE Immutable Infrastructure
+DISPOSABLE Disposable Infrastructure
 ---
 When||What|Who
 ---|---|---|---
 2002|JAVA|<cite>*[Patterns of Enterprise Application Architecture]*</cite>|@martinfowler
-2011*|RUBY|*[12factor.net]*|@adamwiggins
+2007||*[heroku.com]*
+2011|RUBY|*[12factor.net]*|@adamwiggins
 
-[heroku.com]: 2007
 ***
 ```notes
 Defines building blocks of distributed applications
@@ -390,7 +390,6 @@ constrain: Lock down, secure, constrain
 *[:dvd:]: DATA
 *[:earth_americas:]: STATELESS
 *[:cloud:]: SERVICE
-*[:put_litter_in_its_place:]: DISPOSABLE
 *[:octocat:]: GIT
 *[:hash:]: VERSION\_NUMBER
 *[:globe_with_meridians:]: URL
