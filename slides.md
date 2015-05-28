@@ -1,8 +1,7 @@
-
 # 12 Factor App
 
 DISPOSABLE Disposable Infrastructure
----
+***
 ```notes
 In 2002 Martin Fowler write about the building blocks of distributed applications.
 In 2011(?) Adam Wiggins tuned it with more opinions and more web focused.
@@ -12,58 +11,67 @@ When||What|Who
 ---|---|---|---
 2002|JAVA|<cite>[Patterns of Enterprise Application Architecture]</cite>|@martinfowler
 2007||*[heroku.com]*
-2011|RUBY|<cite>[12factor.net]</cite> <small>[git][12factor-gh]</small>|@adamwiggins
+2011|GEM|<cite>[12factor.net]</cite> <small>[git][12factor-gh]</small>|@adamwiggins
 ***
 ```notes
 TODO: talk about define configure: service urls, # runners, 
 service, runner, build, deploy has own (docker), config (machines), data (# runners)
 ```
-MANY|DISPOSABLE|SERVICE|&nbsp;
+MANY|DISPOSABLE|SERVICE|MEASURE
 ---|---|---|---
-URL|GIT|VERSION_NUMBER
 CODE|CONFIG|DATA|STATELESS
 BUILD|DEPLOY|RUNNER|SCALE
-MEASURE|DOGFOOD
-***
 ***
 # I. CODE Codebase 
 One codebase tracked in revision control, many deploys
 ---
 ONE|SERVICE
 ---|---
-URL|VERSION_NUMBER
+URL|VERSIONED
 CODE|GIT
 ---
-&nbsp;|build|`console`|vmdb|MANY
----|---|---|---|---
-upstream|GIT|GIT|GIT|GIT
-downstream|GIT|GIT|GIT|GIT
+||BUILD|DEPLOY|:one:|:two:|:three:|GEM
+---|---|---|---|---|---|---
+<small>upstream</small>|GIT|GIT|GIT|GIT|GIT|MANY
+<small>downstream</small>|GIT|GIT|GIT|GIT|GIT|MANY
 ---
-&nbsp;|build|`console`|vmdb|MANY
----|---|---|---|---
-ME|NO|YES|YES|NO
-YOU|NO|NO|YES|NO
-OTHERS|YES|YES|YES|YES
+||BUILD|DEPLOY|:one:|:two:|:three:|GEM
+---|---|---|---|---|---|---
+ME|NO|YES|YES|NO|NO|:three:
+YOU|NO|NO|YES|NO|YES|:two:
+OTHERS|YES|YES|YES|YES|YES|MANY
+---
+|CODE|VERSIONED|VERSIONED
+---|---|---
+|SERVICE|:one:|:two:|
 ***
 ***
-# II. VERSION_NUMBER Dependencies
+# II. VERSIONED Dependencies
 Explicitly declare and isolate dependencies
 ---
 ```notes
- code vs config vs data
- tmpl.yml (customer changes) schema
-hard to declare config in db / yml dependency
-hard to declare data dependencies
-tmpl.yml is changed
+What do we do if our requirements change?
+Can others protect us from their changes?
+
+lots of forks (`awesome_spawn`, url?)
+a few files - hard to version, not declared
+
+data: changing state of external services
+2 versions running
+data: schema changes via migrations
+data: contents of blobs - migrations (schema)
+
+file/message bus = rpc mechanisms
 ```
-where|type||example|VERSION_NUMBER
----|---|---|---|---
-FILE|CODE|APPLIANCE|`kickstart`, `rpm`|YES
-FILE|CODE|SERVICE|`Gemfile`|YES
-FILE|CONFIG||`ENV[]`, `/defaults`|YES
-CONFIG|FILE||`tmpl.yml` <small>(change)<small>|NO
-FILE|DATA||`schema.rb`|NO
-CONFIG|DATA||`tmpl.yml`<small>(migrations)<small>|NO
+|          |VERSIONED|GIT
+-----------|------|---------
+URL        |YES   |`/v1/`
+FORK       |YES   |`Gemspec`, `rpmspec`
+CONFIG     |DEPLOY|`.sample.yml`
+DATA       |CODE  |`schema.rb` `blob.yml`
+FILE       |CODE  |`config/password`
+MESSAGE BUS|CODE  |`version: 1`?
+CUSTOM     |BUILD |GEM `reports.yml`
 ***
 ***
 # III. CONFIG Config
@@ -71,19 +79,17 @@ CONFIG|DATA||`tmpl.yml`<small>(migrations)<small>|NO
 Store config in the environment
 ---
 ```notes
-separation is most important part
+re ENV: separation is most important part
 perils of overwriting
 avoid bulk build time vs runtime
-build time vs runtime
 ```
-CONFIG|CODE|WIN
----|---|---
-CONFIG|GIT|<small>migrations too</small>
-MANY|FILE|`ENV[]`?
-CONFIG|CHANGING|Unchanging
-CONFIG|MANY|avoid `RAILS_ENV`
-BUILD|APPLIANCE|`APACHE_VER`
-
+CONFIG  |      |
+--------|------
+SEPARATE|CODE
+DEPLOY  |`ENV[]`
+BUILD   |FILE
+MANY    |avoid `RAILS_ENV`
+CHANGING|DATABASE
 ***
 ***
 # IV. SERVICE Backing Services
@@ -91,74 +97,54 @@ BUILD|APPLIANCE|`APACHE_VER`
 Treat backing services as attached resources
 ---
 ```notes
+url - easy to make remote / scale
+url - has versioning
+url/dns discoverable
   they have urls, versioned, and discoverable
-  cut into many services by functionality
 ```
-SERVICE|URL|&nbsp;
----|---|---
-SERVICE|VERSION_NUMBER
-SERVICE|DISCOVERY|`DNS`
-MANY|SERVICE|CODE
----
-```notes
-lots of forks - are versionable
-more performant to move to url model?
-a few files - hard to version / declare dependencies
-makes sense to convert to config or data
-```
-FORK|VERSION_NUMBER|LIKE
----|---|---
-&nbsp;|URL|SCALE
-FILE|VERSION_NUMBER|DISLIKE
-&nbsp;|CONFIG|VERSION_NUMBER
-MESSAGE BUS|VERSION_NUMBER|DISLIKE
----
-MANY|SERVICE|GROOVE
----|---|---
-&nbsp;|GROOVE|core competency?
-SERVICE|DISPOSABLE|standards
----
-```notes
-    What does these services look like?
-    not a whole appliance
-```
-SERVICE|UNKNOWN
----|---
-APPLIANCE|DISLIKE
-RUNNER|LIKE
-WORKER|LIKE
-console|LIKE
-automate|LIKE
-
-service or component
-
+URL      | |
+---------|---
+SCALE    |bigger service
+VERSIONED|
+DISCOVERY|`DNS` (mod_rewrite)
+URL|user, pass
 ***
 ***
 ### V. BUILD Build, DEPLOY release, RUNNER run
 
 Strictly separate build and run stages
 ---
-BUILD|SERVICE|CONFIG|just works
----|---|---|---
-CODE|ASSETS|LIKE|`rake asset:build`
-CODE|RUBY|LIKE|gem install
-FILE|CUSTOM|LIKE|branding
-FILE|CUSTOM|LIKE|`custom_report.yml`
-FILE|CONFIG|LIKE|Custom properties
+```notes
+2 differnt build phases?
+custom = Docker `FROM` - to customize base image
+automate customization XII VERSIONED, code up one offs
+
+gold image, immutable
+```
+BUILD |SERVICE| |
+------|-------|---
+CODE  |GEM    |gem install, `rake asset:build`
+CONFIG|FILE   |Same all customers
+BUILD |SERVICE|DOCKER `"FROM"`
+CUSTOM|GEM    |Custom properties
+CUSTOM|CONFIG |`custom_report.yml`
+---
+DEPLOY|SERVICE|  |
+------|-------|---
+CUSTOM|CONFIG |Cloudinit
+CUSTOM|GEM    |Custom properties
+MULTI-TENANT|
+CONFIG|TO|DATA
 ---
 ```notes
-when running, no customization, upgrading
-
+TODO: huh?
+state is not in database
 ```
-RUNNER|SCALE|&nbsp;|&nbsp;
----|---|---|---
-CODE|VERSION_NUMBER|DISLIKE|rpm upgrade
-CODE|RUBY|DISLIKE| gem install
-FILE|CUSTOM|DISLIKE|branding
-FILE|CONFIG|DISLIKE|self modifying
-SECURITY|ROOT|LIKE
-
-
+RUNNER|SERVICE| |
+----  |---|---
+CONFIG|URL
+DATA|
+CONSTRAINT|ROOT
 ***
 ***
 # VI. STATELESS Processes
@@ -170,47 +156,12 @@ service is stateless
 state goes to data or config
 applinace is stateless (if appliance is a service vs runner)
 ```
-
-SERVICE|STATELESS||CONFIG|DATA
----|---|---|---|---
-APPLIANCE|STATELESS||CONFIG|UNKNOWN
----
-```notes
-    rolling upgrades - multiple versions hard
-    when there is state, even harder
-
-    create separate service w/ database
-    upgrade service easy
-    upgrade database hard (urls may help)
-
-    
-```
-VERSION_NUMBER|VERSION_NUMBER|UNHAPPY|&nbsp;
----|---|---|---|---
-SERVICE|DATA|UNHAPPY|UNHAPPY
-SERVICE|STATELESS|HAPPY
-SERVICE|DATA|VERSION_NUMBER
-DATA|URL|VERSION_NUMBER|VERSION_NUMBER
-VERSION_NUMBER|VERSION_NUMBER|HAPPY
----
-```notes
-What can change?
-putting state into database
-
-code is versioned
-config var names is versioned by the code that calls it
-code drived by config is versioned
-data in database is not well versioned migrations are crude
-(have to reimplement) - automate
-should only boot once
-```
-STATELESS||change?|VERSION_NUMBER|&nbsp;
----|---|---|---|---
-CODE|FILE|BUILD|YES
-CONFIG|cloud-init|ONE|YES|CODE
-DATA|database|YES|NO|migrations
-CONFIG|DATA|YES|NO|etcd
-CODE|DATA|YES|NO|automate
+CONSTRAINT|CODE
+----------|---
+CONSTRAINT|CONFIG
+CHANGING  |SERVICE
+CHANGING  |DATA
+CONSTRAINT|APPLIANCE
 ***
 ***
 # VII. URL Port binding
@@ -220,12 +171,14 @@ Export services via port binding
 ```notes
     prefer dns over mod_rewrite
 ```
-URL|YES|&nbsp;
----|---|---
+|          |VERSIONED| |
+-----------|---|---
+URL        |YES|
+DATA       |NO |`psql`
 MESSAGE BUS|NO
-FORK|NO
-FILE|NO
-DISCOVERY|YES|`DNS`
+FORK       |NO
+FILE       |NO
+DISCOVERY  |YES|`DNS`
 ***
 ***
 # VIII. SCALE Concurrency
@@ -235,8 +188,8 @@ Scale out via the process model
 ```notes
 can fork, but new processes (new boxes) important
 ```
-SCALE|&nbsp;|&nbsp;
----|---|---
+SCALE  |   |   |
+-------|---|---
 SERVICE|FORK
 SERVICE|COMPUTER|COMPUTER
 ---
@@ -244,9 +197,10 @@ SERVICE|COMPUTER|COMPUTER
 separate service from runner
 pids are job of runner
 ```
-SERVICE|RUNNER
----|---
-`PID`|DISLIKE
+|      |`PID`|SCALE
+-------|-----|---
+RUNNER |YES  |YES
+SERVICE|NO   |NO
 ***
 ***
 # IX. DISPOSABLE Disposability
@@ -254,131 +208,105 @@ SERVICE|RUNNER
 Maximize robustness with fast startup and graceful shutdown
 ---
 ```notes
+goal: make router (runner) stateless
 easy to discover / add workers (and remove)
 capacity planning - react to dynamic load
     Pet vs Cattle
+
+    immutable - chef
+    same blocks
+    config state
+    customization state
 ```
-&nbsp;|SCALE|&nbps;
+| |SCALE| |
 ---|---|---
-&nbsp;|YES|startup instantly
+| |YES|startup instantly
 CLEANUP|NO
 MEASURE|YES|dynamic load
-PET|NO
-PET2|NO
+PET|NO|PET2
 DISPOSABLE|YES
 ---
-```notes
-guid locks an image to work
-no one else can come in
-want to discover and do work easily
-separate runner from worker
-simplify specification of work
-```
-SCALE||DISPOSABLE
----|---|---
-CONFIG|`GUID`|PET
-CONFIG|FILE|PET
-RUNNER|WORKER|DISPOSABLE
-DISCOVERY|WORKER|DISPOSABLE
+SCALE||DISPOSABLE| |
+---|---|---|---
+CONFIG|`GUID`|NO|producers determine
+CONFIG|FILE|NO|manual
+RUNNER|WORKER|YES
+DISCOVERY|WORKER|YES|workers discover
 
-region/zone/capability
 ***
 ***
 # X. DOGFOOD Dev/prod parity
 
 Keep development, staging, and production as similar as possible
 ---
-dev|prod
----|---
-postgres|postgres
-rack|apache
-rails|rake / service
-simulate|WORKER
-postgres|IdM, AD, LDAP, postgres
-GIT|rpm
-rake|appliance_console
-nope|replication
----
-```notes
-Use same scripts for build, qa, and dev
-
-```
-qe|prod
----|---
-APPLIANCE|APPLIANCE
-python|`appliance_console`
-DOGFOOD
+- same scripts to setup dev / qa / production
+- scripts constantly under test
+- ensure scripts at least meet our needs
+- devs run ipa, apache, rpm, appliance_console
+- devs run replication, actual workers (vs simulate)
 ***
 ***
 # XI. MEASURE Logs
 
 Treat logs as event streams
 ---
-MEASURE|&nbsp;
+MEASURE|define normal|
 ---|---
-`miq_top`|splunk
+`miq_top`|
 `/var/log/httpd/`|RHCI
 vmware events|event collector
-MEASURE|define normal
 
 ***
 ***
-# XII. Admin processes
+# XII. VERSIONED Admin processes
 
 Run admin/management tasks as one-off processes
 ---
-Convert one off tasks into code
+```notes
+get processes into git:
+leave it in raw form (bash, sql)
+put in `migrations`, `scripts/``
 
-Not saying 100% polished ruby, do bash
+1. may need to do it again
+2. team review
+3. want to be able to reproduce
 
-e.g.: sql in production -> migration
+provide this for our customers
+```
+CODE|CONFIG|DATA|STATELESS|VERSIONED
+---|---|---|---|---
+CUSTOM|CUSTOM|CUSTOM|NO|NO
+GIT|GIT|GIT|YES|YES
 ***
+```notes
+REVIEW
+```
+MANY|DISPOSABLE|SERVICE|MEASURE
+---|---|---|---
+CODE|CONFIG|DATA|STATELESS
+BUILD|DEPLOY|RUNNER|SCALE
+---
 # Refs
 - [12factor.net] from [heroku.com]
-- [Immutable Infrastructure]
-- [Pivotal podcast](http://www.paasmag.com/2014/11/19/all-things-pivotal-episode-7-a-look-at-12-factor-apps/)
-- [docker 12 factor](http://www.slideshare.net/williamyeh/12-factor-app-from-dockers-point-of-view)
-- [reveal-ck](https://github.com/jedcn/reveal-ck) slides
----
-```notes    
-? hear no evil, see no evil, say no evil
-? ticket, train station, fuelpump
-? scisors vs barber
-*[::]: TERMINAL (console)
-*[:trollface:]: ENEMY/BAD - :snake: :bomb: (do WIN instead)
-*[:checkered_flag:]: end goal?
-FIX: dogfood
-FIX: runner (not runner)
-FIX: deploy (not wrench)
-ALT changing:  / wild / joker / slotmachine
-DELETE: gem / art / assets / cleanup
-DELETE: computer vs developer (maybe use appliance instead?)
-
-MERGE: groove -> win -> 
-MERGE: like/dislike -> yes/no OR good/bad?
-MERGE: happy/unhappy -> like/dislike -> good/bad?
-MERGE: STATE -> DOG ?
-MERGE: STATELESS -> CATTLE ?
-overloading:
-appliance: app, web app, appliance (runner or aggregate service?)
-service: component, service, exe
-scale: scale, concurrency, performance
-ruby: gem, ruby, web tech
-constrain: Lock down, secure, constrain
-``` 
-
+- <cite>[Immutable Infrastructure]</cite>
+- <cite>[Pivotal podcast](http://www.paasmag.com/2014/11/19/all-things-pivotal-episode-7-a-look-at-12-factor-apps/)</cite>
+- <cite>[docker 12 factor](http://www.slideshare.net/williamyeh/12-factor-app-from-dockers-point-of-view)</cite>
+- slides: [reveal-ck](https://github.com/jedcn/reveal-ck)
+[Patterns of Enterprise Application Architecture]: http://amzn.com/0321127420
+[12factor.net]: http://12factor.net
+[12factor-gh]: https://github.com/heroku/12factor
+[heroku.com]: http://heroku.com/
+[Immutable Infrastructure]: http://chadfowler.com/blog/2013/06/23/immutable-deployments/
 *[:ballot_box_with_check:]: YES
 *[:white_medium_square:]: NO
-*[:+1:]: LIKE
-*[:-1:]: DISLIKE
 *[:construction_worker:]: WORKER
 *[:symbols:]: CODE
 *[:abcd:]: CONFIG
 *[:dvd:]: DATA
-*[:earth_americas:]: STATELESS
+*[:innocent:]: STATELESS
 *[:cloud:]: SERVICE
 *[:octocat:]: GIT
-*[:hash:]: VERSION\_NUMBER
+*[:hash:]: VERSIONED
 *[:globe_with_meridians:]: URL
 *[:runner:]: RUNNER
 *[:wrench:]: DEPLOY
@@ -401,22 +329,22 @@ constrain: Lock down, secure, constrain
 *[:chart_with_upwards_trend:]: MEASURE
 *[:fork_and_knife:]: FORK
 *[:black_joker:]: CHANGING
-*[:metal:]: WIN
 *[:computer:]: COMPUTER
-*[:frowning:]: UNHAPPY
-*[:musical_note:]: GROOVE
-*[:gem:]: RUBY
+*[:gem:]: GEM
 *[:hotsprings:]: JAVA
-*[:page_facing_up:]: ASSETS
 *[:art:]: CUSTOM
-*[:grey_question:]: UNKNOWN
 *[:lock:]: CONSTRAINT
-*[:grining:]: HAPPY
 *[:bathtub:]: CLEANUP
 *[:scissors:]: SEPARATE
-
-[Patterns of Enterprise Application Architecture]: http://amzn.com/0321127420
-[12factor.net]: http://12factor.net
-[12factor-gh]: https://github.com/heroku/12factor
-[heroku.com]: http://heroku.com/
-[Immutable Infrastructure]: http://chadfowler.com/blog/2013/06/23/immutable-deployments/
+*[:put_litter_in_its_place:]: DELETE
+*[:ship:]: DOCKER
+*[:+1:]: LIKE
+*[:-1:]: DISLIKE
+*[:guitar:]: CFME
+*[:grey_question:]: UNKNOWN
+*[:arrow_right:]: TO
+*[:office:]: MULTI-TENANT
+*[:turtle:]: TURTLE
+*[:sunflower:]: UX
+*[:electric_plug:]: PLUGABLE
+*[:mailbox:]: DATABASE

@@ -1,5 +1,8 @@
 filters:
+- "HTML::Pipeline::DotFilter"
 - "HTML::Pipeline::AutoAbbrFilter"
 - "HTML::Pipeline::AbbrEmojiFilter"
 - "HTML::Pipeline::MentionFilter"
 - "HTML::Pipeline::AutolinkFilter"
+requires:
+- "html/pipeline/abbr"
