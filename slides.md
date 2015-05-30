@@ -24,22 +24,28 @@ CODE|CONFIG|DATA|STATELESS
 BUILD|DEPLOY|RUNNER|SCALE
 ---
 ```notes
-code changes at build time, put onto the disk
-unique per version. have migrations to change schema of external service.
-config changes at deploy time, put into the env
-unique per customer. url has versioning information in it
+- code, on disk changes at build time. set by us and unique per version.
+  (column row, blob keys count. migrations to help, REST response schema)
+- config changes at deploy time, put into the env
+  unique per customer. url has versioning information in it.
+- data, in the database changes at runtime. set by many services and unique by time.
 
-in our app, providers change - they are data
-in the life of a worker, they are constant - config
-automate is code, just stored in the database
+Interesting:
+- What does not match changing model (or versioning)
+- When CONFIG considered DATA (SEPARATE) e.g.: privders
+- When CODE is considered DATA e.g.: automate
+- When CODE is not stored on FILE
+
+TODO: CODE (comment on automate)
+TODO: CODE (url has server, code determines version / to match own api)
+
 ```
-what  |CHANGING|          |e.g.                    |where   |VERSIONED
-------|--------|----------|------------------------|--------|--------
-CODE  |BUILD   |VERSIONED |`schema.rb`, blobs      |FILE    |YES
-CONFIG|DEPLOY  |CUSTOMER  |URL                     |`ENV`   |NO
-DATA  |RUNNER  |:alarm_clock:|vms, hosts, providers|DATABASE|NO
-CONFIG|WORKER  |CUSTOMER  |provider url (alt)      |`ENV`   |NO
-CODE  |WORKER  |CUSTOMER  |automate                |DATABASE|UNKNOWN
+      |        |CHANGING|         |e.g.                    |VERSIONED
+------|--------|--------|---------|------------------------|--------
+CODE  |FILE    |BUILD   |CFME     |`schema.rb`, api, keys  |YES
+CONFIG|`ENV*`  |DEPLOY  |CUSTOMER |URL                     |UNKNOWN
+DATA  |DATABASE|RUNNER  |ANYTIME  |vms, hosts, providers   |NO
+LOGS  |MEASURE |RUNNER  |ANYTIME  |logs, events            |NO
 ---
 ```dot
 digraph factor_flow {
@@ -54,8 +60,9 @@ digraph factor_flow {
     {
       rank="SAME"
       service1     [ label="{vm|SERVICE}"]
-      metrics1     [ label="{vm|MEASURE}"]
+      service3     [ label="{vm|SERVICE}"]
     }
+    metrics1     [ label="{vm|MEASURE}"]
     service2     [ label="{vm|DATA}"]
     service2 -> service1 [ dir="back" ]
     metrics1 -> service1 [ dir="back" ]
@@ -73,14 +80,14 @@ digraph factor_flow {
     vm0         -> build
     vm1         -> build [ dir="back" ]
     vm1         -> build
-    vm2         -> build [ dir="back" ]
+    vm2         -> build [ dir="back" label="create"]
   subgraph cluster_deploy {
     deploy_config [ label="{CONFIG|CUSTOMER}" ]
     deploy        [ label="DEPLOY" ]
     deploy   -> deploy_config [dir="back"]
   }
     vm2      -> deploy
-    service1 -> deploy     [ dir="back" ]
+    service1 -> deploy     [ dir="back" label="create" ]
   subgraph cluster_runner {
     runner_data [ label="{DATA|{SERVICE|SCALE}|{SERVICE|SCALE}|{MEASURE|SCALE}}"]
     runner                [ label="{RUNNER}" ]
@@ -88,7 +95,8 @@ digraph factor_flow {
   }
     metrics1 -> runner    [ dir="back" constraint="false" style="invis"]
     service2 -> runner    [ dir="back" style="invis" ]
-    service1 -> runner    [ dir="back" ]
+    service1 -> runner    [ dir="back" label="clone" ]
+    service3 -> runner    [ dir="back" label="clone" ]
 }
 ```
 ***
@@ -101,11 +109,6 @@ ONE|SERVICE
 URL|VERSIONED
 CODE|GIT
 ---
-DEPLOY|VERSIONED
----|---
-SERVICE|:one:
-SERVICE|:two:
----
 ||BUILD|DEPLOY|:one:|:two:|:three:|:gem:
 ---|---|---|---|---|---|---
 <small>upstream</small>|GIT|GIT|GIT|GIT|GIT|MANY
@@ -116,27 +119,47 @@ SERVICE|:two:
 ME|NO|YES|YES|NO|NO|:three:
 YOU|NO|NO|YES|NO|YES|:two:
 OTHERS|YES|YES|YES|YES|YES|MANY
+---
+DEPLOY|VERSIONED
+---|---
+SERVICE|:one:
+SERVICE|:two:
 ***
 ***
 # II. VERSIONED Dependencies
 Explicitly declare and isolate dependencies
 ---
+|||
+|---|---|
+DEPLOY|Can we run?
+DEPLOY|Rollback?
+RUNNER|Can someone break us?
+RUNNER|Why is broken?
+---
+|||
+---|---
+CODE|MESSAGE_BUS|`schema.rb`|
+CONFIG|api, `blob schema`
+DATA|`schema`
+---
 ```notes
-What do we do if our requirements change?
-Can others protect us from their changes?
+State who we depend upon (and the version)
 
 lots of forks (`awesome_spawn`, url?)
 a few files - hard to version, not declared
 
-data: changing state of external services
-2 versions running
-data: schema changes via migrations
-data: contents of blobs - migrations (schema)
-
 file/message bus = rpc mechanisms
 ```
+where|VERSIONED|type  |VERSIONED|stable|
+-----|---------|------|---------|------|
+FILE |YES      |CODE  |YES      |YES   |source
+FILE |YES      |CONFIG|NO       |NO    |report.yml
+FILE |         |DATA  |         |      |
+ENV  |NO       |CONFIG|NO
+---
 |          |VERSIONED|GIT
 -----------|------|---------
+FILE       |CODE  |GIT FORK
 URL        |YES   |`/v1/`
 FORK       |YES   |`Gemspec`, `rpmspec`
 CONFIG     |DEPLOY|`.sample.yml`
@@ -144,10 +167,33 @@ DATA       |CODE  |`schema.rb` `blob.yml`
 FILE       |CODE  |`config/password`
 MESSAGE BUS|CODE  |`version: 1`?
 CUSTOM     |BUILD |`reports.yml`
+---
+```notes
+tell everyone your requirements
+can you control the version you run
+e.g. db migreations - no?
+```
+CODE  |BUILD   |code       |FILE        |GIT|:bug:
+------|--------|-----------|------------|--------|---|---
+FORK  |BUILD   | `rpmspec` |FILE        |GIT
+:gem: |BUILD   | `Gemfile` |FILE        |GIT 
+CONFIG|RUNNER  | URL       |FILE        |NO      |:five:  
+CONFIG|RUNNER  | `database.yml`         |ENV     |:one:
+DATA  |RUNNER  | `schema.rb`, blobs     |DATABASE|:two:
+CODE  |RUNNER  | rpc                    |MESSAGE BUS|:three:
+CODE  |RUNNER  |automate                |DATABASE|CODE       |:four:
+---
+
+|     |CONSTRAINED|MULTI-TENANT|:moneybag:| action
+|---  |---|----------|----|-------|----------|
+|:five:|NO|NO|NO|Lock down api version in code
+|:one:|YES|NO|NO|CONFIG TO DEPLOY of TO DATA
+|:two:|||:money_with_wings:|Move data from sql to service
+|:three:|||YES|Intent not code
+|:four:||
 ***
 ***
 # III. CONFIG Config
-
 Store config in the environment
 ---
 ```notes
@@ -162,10 +208,17 @@ DEPLOY  |`ENV[]`
 BUILD   |FILE
 MANY    |avoid `RAILS_ENV`
 CHANGING|DATABASE
+---
+what  |CHANGING|          |e.g.                    |where   |VERSIONED
+------|--------|----------|------------------------|--------|--------
+CODE  |BUILD   |VERSIONED |`schema.rb`, blobs      |FILE    |YES
+CONFIG|DEPLOY  |CUSTOMER  |URL                     |`ENV`   |NO
+DATA  |RUNNER  |:alarm_clock:|vms, hosts, providers|DATABASE|NO
+CONFIG|WORKER  |CUSTOMER  |provider url (alt)      |`ENV`   |NO
+CODE  |WORKER  |CUSTOMER  |automate                |DATABASE|UNKNOWN
 ***
 ***
 # IV. SERVICE Backing Services
-
 Treat backing services as attached resources
 ---
 ```notes
@@ -183,7 +236,6 @@ URL|user, pass
 ***
 ***
 ### V. BUILD Build, DEPLOY release, RUNNER run
-
 Strictly separate build and run stages
 ---
 ```notes
@@ -216,11 +268,10 @@ RUNNER|SERVICE| |
 ----  |---|---
 CONFIG|URL
 DATA|
-CONSTRAINT|ROOT
+CONSTRAINED|ROOT
 ***
 ***
 # VI. STATELESS Processes
-
 Execute the app as one or more stateless processes
 ---
 ```notes
@@ -228,16 +279,15 @@ service is stateless
 state goes to data or config
 applinace is stateless (if appliance is a service vs runner)
 ```
-CONSTRAINT|CODE
+CONSTRAINED|CODE
 ----------|---
-CONSTRAINT|CONFIG
+CONSTRAINED|CONFIG
 CHANGING  |SERVICE
 CHANGING  |DATA
-CONSTRAINT|APPLIANCE
+CONSTRAINED|APPLIANCE
 ***
 ***
 # VII. URL Port binding
-
 Export services via port binding
 ---
 ```notes
@@ -254,7 +304,6 @@ DISCOVERY  |YES|`DNS`
 ***
 ***
 # VIII. SCALE Concurrency
-
 Scale out via the process model
 ---
 ```notes
@@ -276,7 +325,6 @@ SERVICE|NO   |NO
 ***
 ***
 # IX. DISPOSABLE Disposability
-
 Maximize robustness with fast startup and graceful shutdown
 ---
 ```notes
@@ -308,7 +356,6 @@ DISCOVERY|WORKER|YES|workers discover
 ***
 ***
 # X. DOGFOOD Dev/prod parity
-
 Keep development, staging, and production as similar as possible
 ---
 - same scripts to setup dev / qa / production
@@ -319,7 +366,6 @@ Keep development, staging, and production as similar as possible
 ***
 ***
 # XI. MEASURE Logs
-
 Treat logs as event streams
 ---
 MEASURE|define normal|
@@ -331,7 +377,6 @@ vmware events|event collector
 ***
 ***
 # XII. VERSIONED Admin processes
-
 Run admin/management tasks as one-off processes
 ---
 ```notes
@@ -405,7 +450,7 @@ BUILD|DEPLOY|RUNNER|SCALE
 *[:hotsprings:]: JAVA
 *[:bust_in_silhouette:]: CUSTOMER
 *[:art:]: CUSTOM
-*[:lock:]: CONSTRAINT
+*[:lock:]: CONSTRAINED
 *[:bathtub:]: CLEANUP
 *[:scissors:]: SEPARATE
 *[:put_litter_in_its_place:]: DELETE
@@ -420,3 +465,6 @@ BUILD|DEPLOY|RUNNER|SCALE
 *[:sunflower:]: UX
 *[:electric_plug:]: PLUGABLE
 *[:mailbox:]: DATABASE
+*[:alarm_clock:]: ANYTIME
+*[:evergreen_tree:]: LOGS
+*[:door:]: API
