@@ -11,7 +11,8 @@ When||What|Who
 ---|---|---|---
 2002|JAVA|<cite>[Patterns of Enterprise Application Architecture]</cite>|@martinfowler
 2007||*[heroku.com]*
-2011|GEM|<cite>[12factor.net]</cite> <small>[git][12factor-gh]</small>|@adamwiggins
+2011|:gem:|<cite>[12factor.net]</cite> <small>[git][12factor-gh]</small>|@adamwiggins
+***
 ***
 ```notes
 TODO: talk about define configure: service urls, # runners, 
@@ -21,6 +22,76 @@ MANY|DISPOSABLE|SERVICE|MEASURE
 ---|---|---|---
 CODE|CONFIG|DATA|STATELESS
 BUILD|DEPLOY|RUNNER|SCALE
+---
+```notes
+code changes at build time, put onto the disk
+unique per version. have migrations to change schema of external service.
+config changes at deploy time, put into the env
+unique per customer. url has versioning information in it
+
+in our app, providers change - they are data
+in the life of a worker, they are constant - config
+automate is code, just stored in the database
+```
+what  |CHANGING|          |e.g.                    |where   |VERSIONED
+------|--------|----------|------------------------|--------|--------
+CODE  |BUILD   |VERSIONED |`schema.rb`, blobs      |FILE    |YES
+CONFIG|DEPLOY  |CUSTOMER  |URL                     |`ENV`   |NO
+DATA  |RUNNER  |:alarm_clock:|vms, hosts, providers|DATABASE|NO
+CONFIG|WORKER  |CUSTOMER  |provider url (alt)      |`ENV`   |NO
+CODE  |WORKER  |CUSTOMER  |automate                |DATABASE|UNKNOWN
+---
+```dot
+digraph factor_flow {
+  graph [ fontname="helvetica-bold" ]
+  node  [ id="\N" shape="Mrecord" style="filled" fontname="helvetica" fillcolor="#ffffff" penwidth="2" ]
+  edge  [ arrowsize="0.5" fontname="helvetica"]
+
+  subgraph xcluster_vmware {
+    vm0          [ label="{template|OS}" ]
+    vm1          [ label="{template|APPLIANCE}" ]
+    vm2          [ label="{template|CUSTOMER}" ]
+    {
+      rank="SAME"
+      service1     [ label="{vm|SERVICE}"]
+      metrics1     [ label="{vm|MEASURE}"]
+    }
+    service2     [ label="{vm|DATA}"]
+    service2 -> service1 [ dir="back" ]
+    metrics1 -> service1 [ dir="back" ]
+  }
+
+  subgraph cluster_build {
+    build [ label="BUILD" ]
+    build_custom1 [ label="{CODE|VERSIONED}" ]
+    build_custom  [ label="{reports.yml|CUSTOMER}" ]
+    vm_build_config [ label="{CONFIG CODE|CUSTOMER}" ]
+    build       -> build_custom1 [dir="back" constraint="false"]
+    build       -> build_custom [dir="back" ]
+    build       -> vm_build_config [ dir="back" ]
+  }
+    vm0         -> build
+    vm1         -> build [ dir="back" ]
+    vm1         -> build
+    vm2         -> build [ dir="back" ]
+  subgraph cluster_deploy {
+    deploy_config [ label="{CONFIG|CUSTOMER}" ]
+    deploy        [ label="DEPLOY" ]
+    deploy   -> deploy_config [dir="back"]
+  }
+    vm2      -> deploy
+    service1 -> deploy     [ dir="back" ]
+  subgraph cluster_runner {
+    runner_data [ label="{DATA|{SERVICE|SCALE}|{SERVICE|SCALE}|{MEASURE|SCALE}}"]
+    runner                [ label="{RUNNER}" ]
+    runner   -> runner_data [ dir="back" ]
+  }
+    metrics1 -> runner    [ dir="back" constraint="false" style="invis"]
+    service2 -> runner    [ dir="back" style="invis" ]
+    service1 -> runner    [ dir="back" ]
+}
+```
+***
 ***
 # I. CODE Codebase 
 One codebase tracked in revision control, many deploys
@@ -30,20 +101,21 @@ ONE|SERVICE
 URL|VERSIONED
 CODE|GIT
 ---
-||BUILD|DEPLOY|:one:|:two:|:three:|GEM
+DEPLOY|VERSIONED
+---|---
+SERVICE|:one:
+SERVICE|:two:
+---
+||BUILD|DEPLOY|:one:|:two:|:three:|:gem:
 ---|---|---|---|---|---|---
 <small>upstream</small>|GIT|GIT|GIT|GIT|GIT|MANY
 <small>downstream</small>|GIT|GIT|GIT|GIT|GIT|MANY
 ---
-||BUILD|DEPLOY|:one:|:two:|:three:|GEM
+||BUILD|DEPLOY|:one:|:two:|:three:|:gem:
 ---|---|---|---|---|---|---
 ME|NO|YES|YES|NO|NO|:three:
 YOU|NO|NO|YES|NO|YES|:two:
 OTHERS|YES|YES|YES|YES|YES|MANY
----
-|CODE|VERSIONED|VERSIONED
----|---|---
-|SERVICE|:one:|:two:|
 ***
 ***
 # II. VERSIONED Dependencies
@@ -71,7 +143,7 @@ CONFIG     |DEPLOY|`.sample.yml`
 DATA       |CODE  |`schema.rb` `blob.yml`
 FILE       |CODE  |`config/password`
 MESSAGE BUS|CODE  |`version: 1`?
-CUSTOM     |BUILD |GEM `reports.yml`
+CUSTOM     |BUILD |`reports.yml`
 ***
 ***
 # III. CONFIG Config
@@ -123,16 +195,16 @@ gold image, immutable
 ```
 BUILD |SERVICE| |
 ------|-------|---
-CODE  |GEM    |gem install, `rake asset:build`
+CODE  |       |gem install, `rake asset:build`
 CONFIG|FILE   |Same all customers
 BUILD |SERVICE|DOCKER `"FROM"`
-CUSTOM|GEM    |Custom properties
-CUSTOM|CONFIG |`custom_report.yml`
+CUSTOMER|CODE   |Custom properties
+CUSTOMER|CONFIG |`custom_report.yml`
 ---
 DEPLOY|SERVICE|  |
 ------|-------|---
-CUSTOM|CONFIG |Cloudinit
-CUSTOM|GEM    |Custom properties
+CUSTOMER|CONFIG |Cloudinit
+CUSTOMER|CODE   |Custom properties
 MULTI-TENANT|
 CONFIG|TO|DATA
 ---
@@ -275,7 +347,7 @@ provide this for our customers
 ```
 CODE|CONFIG|DATA|STATELESS|VERSIONED
 ---|---|---|---|---
-CUSTOM|CUSTOM|CUSTOM|NO|NO
+CUSTOMER|CUSTOMER|CUSTOMER|NO|NO
 GIT|GIT|GIT|YES|YES
 ***
 ```notes
@@ -300,7 +372,7 @@ BUILD|DEPLOY|RUNNER|SCALE
 *[:ballot_box_with_check:]: YES
 *[:white_medium_square:]: NO
 *[:construction_worker:]: WORKER
-*[:symbols:]: CODE
+*[:gem:]: CODE
 *[:abcd:]: CONFIG
 *[:dvd:]: DATA
 *[:innocent:]: STATELESS
@@ -330,8 +402,8 @@ BUILD|DEPLOY|RUNNER|SCALE
 *[:fork_and_knife:]: FORK
 *[:black_joker:]: CHANGING
 *[:computer:]: COMPUTER
-*[:gem:]: GEM
 *[:hotsprings:]: JAVA
+*[:bust_in_silhouette:]: CUSTOMER
 *[:art:]: CUSTOM
 *[:lock:]: CONSTRAINT
 *[:bathtub:]: CLEANUP

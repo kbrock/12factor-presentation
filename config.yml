@@ -6,3 +6,4 @@ filters:
 - "HTML::Pipeline::AutolinkFilter"
 requires:
 - "html/pipeline/abbr"
+- "html/pipeline/dot_filter"
