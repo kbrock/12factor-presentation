@@ -1,0 +1,31 @@
+.reveal cite {
+  font-style: italic;
+}
+@media print {
+  /* overriding .reveal section img */
+  .reveal section h1 img, .reveal section h3 img {
+    display: inline;
+  }  
+}
+
+/*
+EmojiSymbols Font (c)blockworks - Kenichi Kaneko
+http://emojisymbols.com/
+*/
+@font-face {
+  font-family: "EmojiSymbols";
+  src: url('EmojiSymbols-Regular.woff') format('woff');
+  text-decoration: none;
+  font-style: normal;
+}
+
+.reveal .emoji {
+  position: relative;
+  display: inline-block;
+  font-family: "EmojiSymbols";
+  line-height: 1;
+  font-size: 2.5em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+

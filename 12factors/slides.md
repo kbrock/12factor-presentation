@@ -138,7 +138,7 @@ RUNNER|Why is broken?
 ---
 |||
 ---|---
-CODE|MESSAGE_BUS|`schema.rb`|
+CODE|MESSAGE BUS|`schema.rb`|
 CONFIG|api, `blob schema`
 DATA|`schema`
 ---

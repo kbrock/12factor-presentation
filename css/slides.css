@@ -1,9 +1,0 @@
-.reveal cite {
-  font-style: italic;
-}
-@media print {
-  /* overriding .reveal section img */
-  .reveal section h1 img, .reveal section h3 img {
-    display: inline;
-  }  
-}

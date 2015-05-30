@@ -1,3 +1,5 @@
 .bundle
 slides
 Gemfile.lock
+work
+.ruby-version

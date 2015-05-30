@@ -8,3 +8,4 @@ requires:
 - "tilt/erb"
 - "html/pipeline/abbr"
 - "html/pipeline/dot_filter"
+#prefer_unicode: true
