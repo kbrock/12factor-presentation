@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# create a directory with slides
+# https://github.com/progrium/bashstyle
+
+real_root() {
+  local root="${1%/*}"
+  pushd "${root}" > /dev/null
+  local absroot="${PWD}"
+  popd > /dev/null
+  echo "${absroot}"
+}
+
+copy_files() {
+  local root="$1"
+  local slide_dir="$2"
+  echo "making ${slide_dir}"
+  [ -d "${slide_dir}" ] || mkdir ${slide_dir}
+  pushd "${slide_dir}" > /dev/null
+  for t in ${root}/_common/* ; do
+    if [ ! -e "./${t##*/}" ] ; then
+      echo "${t}"
+      ln -s ${t} .
+    fi
+  done
+  for t in ${root}/_templates/* ; do
+    if [ ! -e "./${l##*/}" ] ; then
+      echo "${t}"
+      cp "${t}" .
+    fi
+  done
+  #bundle
+  popd > /dev/null
+}
+
+root=$(real_root "${0}")
+if [[ "${#}" -eq 0 || "${1}" == "-h" ]] ; then
+  echo "usage: ${0} slide_name" >&2
+else
+  copy_files "${root}" "$@"
+fi
