@@ -1,6 +1,0 @@
-#!/bin/bash
-if [ $# -eq 0 ] ; then
-  op="serve -p 3000"
-fi
-
-bundle exec reveal-ck ${op} "$@"

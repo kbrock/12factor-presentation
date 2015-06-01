@@ -18,9 +18,9 @@ When||What|Who
 TODO: talk about define configure: service urls, # runners, 
 service, runner, build, deploy has own (docker), config (machines), data (# runners)
 ```
-MANY|DISPOSABLE|SERVICE|MEASURE
+MANY|DISPOSABLE|STATELESS|SERVICE
 ---|---|---|---
-CODE|CONFIG|DATA|STATELESS
+CODE|CONFIG|DATA|MEASURE
 BUILD|DEPLOY|RUNNER|SCALE
 ---
 ```notes
@@ -65,6 +65,7 @@ digraph factor_flow {
     metrics1     [ label="{vm|MEASURE}"]
     service2     [ label="{vm|DATA}"]
     service2 -> service1 [ dir="back" ]
+    service2 -> service3 [ dir="back" ]
     metrics1 -> service1 [ dir="back" ]
   }
 
@@ -95,8 +96,8 @@ digraph factor_flow {
   }
     metrics1 -> runner    [ dir="back" constraint="false" style="invis"]
     service2 -> runner    [ dir="back" style="invis" ]
-    service1 -> runner    [ dir="back" label="clone" ]
-    service3 -> runner    [ dir="back" label="clone" ]
+    service1 -> runner    [ dir="back" ]
+    service3 -> runner    [ dir="back" ]
 }
 ```
 ***
@@ -166,7 +167,7 @@ CONFIG     |DEPLOY|`.sample.yml`
 DATA       |CODE  |`schema.rb` `blob.yml`
 FILE       |CODE  |`config/password`
 MESSAGE BUS|CODE  |`version: 1`?
-CUSTOM     |BUILD |`reports.yml`
+CUSTOMER   |BUILD |`reports.yml`
 ---
 ```notes
 tell everyone your requirements
@@ -449,7 +450,6 @@ BUILD|DEPLOY|RUNNER|SCALE
 *[:computer:]: COMPUTER
 *[:hotsprings:]: JAVA
 *[:bust_in_silhouette:]: CUSTOMER
-*[:art:]: CUSTOM
 *[:lock:]: CONSTRAINED
 *[:bathtub:]: CLEANUP
 *[:scissors:]: SEPARATE
@@ -468,3 +468,5 @@ BUILD|DEPLOY|RUNNER|SCALE
 *[:alarm_clock:]: ANYTIME
 *[:evergreen_tree:]: LOGS
 *[:door:]: API
+*[:tophat:]: Red Hat
+*[:moneybag:]: DEBT

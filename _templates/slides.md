@@ -35,7 +35,6 @@
 *[:computer:]: COMPUTER
 *[:hotsprings:]: JAVA
 *[:bust_in_silhouette:]: CUSTOMER
-*[:art:]: CUSTOM
 *[:lock:]: CONSTRAINED
 *[:bathtub:]: CLEANUP
 *[:scissors:]: SEPARATE

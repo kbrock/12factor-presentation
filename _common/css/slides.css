@@ -1,6 +1,12 @@
 .reveal cite {
   font-style: italic;
 }
+
+/* not working */
+body .reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
+  font-transform: capitalize !important;
+}
+
 @media print {
   /* overriding .reveal section img */
   .reveal section h1 img, .reveal section h3 img {

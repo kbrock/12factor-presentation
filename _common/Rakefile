@@ -1,9 +1,15 @@
-task :slides do
+task :generate do
   puts "reveal-ck generate"
   `bundle exec reveal-ck generate`
 end
 
-task :default => :slides
+task :serve => :generate do
+  port=ENV["PORT"] || File.read("PORT").chomp
+  puts "reveal-ck serve -p #{port}"
+  exec("bundle exec reveal-ck serve -p #{port}")
+end
+
+task :default => :serve
 
 # not sure if we still want this stuff:
 
