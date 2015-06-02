@@ -1,0 +1,1273 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+<title>Slides</title>
+
+<meta name="description" content="">
+<meta name="author" content="">
+<meta name="generator" content="reveal-ck 3.1.0">
+
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+<link rel="stylesheet" href="css/reveal.css">
+<link rel="stylesheet" href="css/theme/kblack.css" id="theme">
+
+<!-- Code syntax highlighting -->
+<link rel="stylesheet" href="lib/css/zenburn.css">
+
+<link rel="stylesheet" href="css/reveal-ck.css">
+
+<link rel="stylesheet" href="css/slides.css">
+<link rel="stylesheet" href="css/theme/kblack.css">
+
+<!-- Printing and PDF exports -->
+<script>
+  var link = document.createElement( 'link' );
+  link.rel = 'stylesheet';
+  link.type = 'text/css';
+  link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+  document.getElementsByTagName( 'head' )[0].appendChild( link );
+</script>
+
+<!--[if lt IE 9]>
+<script src="lib/js/html5shiv.js"></script>
+<![endif]-->
+
+  </head>
+
+  <body>
+    <div class="reveal">
+  <!-- Any section element inside of this container is displayed as a slide -->
+  <div class="slides">
+    <section>
+
+<h1>
+<abbr title="MULTI-TENANT"><img class="emoji" alt="office" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f3e2.png"></abbr> Multi-tenancy</h1>
+
+</section>
+<section>
+<section>
+
+<h1>
+<abbr title="MULTI-TENANT"><img class="emoji" alt="office" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f3e2.png"></abbr> Goals</h1>
+
+</section>
+<section>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th>providers and tenants</th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><abbr title="DATA"><img class="emoji" alt="dvd" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4c0.png"></abbr></td>
+<td><abbr title="CONSTRAINED"><img class="emoji" alt="lock" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f512.png"></abbr></td>
+<td>(prevent mistakes)</td>
+<td><abbr title="UNCONSTRAINED"><img class="emoji" alt="unlock" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f513.png"></abbr></td>
+<td>share</td>
+</tr>
+<tr>
+<td><abbr title="CONFIG"><img class="emoji" alt="abcd" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f521.png"></abbr></td>
+<td><abbr title="SEPARATE"><img class="emoji" alt="scissors" src="https://assets-cdn.github.com/images/icons/emoji/unicode/2702.png"></abbr></td>
+<td>infrastructure vs app</td>
+<td><abbr title="DELETE"><img class="emoji" alt="put_litter_in_its_place" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f6ae.png"></abbr></td>
+<td><abbr title="FILE"><img class="emoji" alt="file_folder" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4c1.png"></abbr></td>
+</tr>
+<tr>
+<td><abbr title="CODE"><img class="emoji" alt="gem" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f48e.png"></abbr></td>
+<td><abbr title="CONSTRAINED"><img class="emoji" alt="lock" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f512.png"></abbr></td>
+<td>automate</td>
+<td><abbr title="CONSTRAINED"><img class="emoji" alt="lock" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f512.png"></abbr></td>
+<td>gems</td>
+</tr>
+<tr>
+<td><abbr title="LOGS"><img class="emoji" alt="evergreen_tree" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f332.png"></abbr></td>
+<td><abbr title="SEPARATE"><img class="emoji" alt="scissors" src="https://assets-cdn.github.com/images/icons/emoji/unicode/2702.png"></abbr></td>
+<td>aggregate</td>
+<td><abbr title="CONSTRAINED"><img class="emoji" alt="lock" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f512.png"></abbr></td>
+<td><abbr title="ROOT"><img class="emoji" alt="cop" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f46e.png"></abbr></td>
+</tr>
+</tbody>
+</table>
+
+</section>
+<section>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th>Extras</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><abbr title="UX"><img class="emoji" alt="sunflower" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f33b.png"></abbr></td>
+<td><abbr title="APPLIANCE"><img class="emoji" alt="tv" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4fa.png"></abbr></td>
+<td>add appliances</td>
+</tr>
+<tr>
+<td><abbr title="UX"><img class="emoji" alt="sunflower" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f33b.png"></abbr></td>
+<td><abbr title="APPLIANCE"><img class="emoji" alt="tv" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4fa.png"></abbr></td>
+<td>Easier upgrades</td>
+</tr>
+<tr>
+<td><abbr title="UX"><img class="emoji" alt="sunflower" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f33b.png"></abbr></td>
+<td><abbr title="APPLIANCE"><img class="emoji" alt="tv" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4fa.png"></abbr></td>
+<td>diagnose problems</td>
+</tr>
+<tr>
+<td><abbr title="SCALE"><img class="emoji" alt="rocket" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f680.png"></abbr></td>
+<td></td>
+<td>
+<abbr title="MEASURE"><img class="emoji" alt="chart_with_upwards_trend" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4c8.png"></abbr> <abbr title="MESSAGE BUS"><img class="emoji" alt="bus" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f68c.png"></abbr>
+</td>
+</tr>
+<tr>
+<td><abbr title="DEBT"><img class="emoji" alt="moneybag" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4b0.png"></abbr></td>
+<td><abbr title="CODE"><img class="emoji" alt="gem" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f48e.png"></abbr></td>
+<td><abbr title="SEPARATE"><img class="emoji" alt="scissors" src="https://assets-cdn.github.com/images/icons/emoji/unicode/2702.png"></abbr></td>
+</tr>
+</tbody>
+</table>
+
+</section>
+</section>
+
+<section>
+<section>
+
+<h1>12 Factor Goals</h1>
+
+<p>Guidelines for Enterprise Apps</p>
+
+</section>
+<section>
+
+<table>
+<thead>
+<tr>
+<th>When</th>
+<th></th>
+<th>What</th>
+<th>Who</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2002</td>
+<td><abbr title="JAVA"><img class="emoji" alt="hotsprings" src="https://assets-cdn.github.com/images/icons/emoji/unicode/2668.png"></abbr></td>
+<td><cite><a href="http://amzn.com/0321127420">Patterns of Enterprise Application Architecture</a></cite></td>
+<td><a href="https://github.com/martinfowler" class="user-mention">@martinfowler</a></td>
+</tr>
+<tr>
+<td>2007</td>
+<td></td>
+<td><em><a href="http://heroku.com/">heroku.com</a></em></td>
+<td></td>
+</tr>
+<tr>
+<td>2011</td>
+<td><img class="emoji" alt="gem" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f48e.png"></td>
+<td>
+<cite><a href="http://12factor.net">12factor.net</a></cite> <small><a href="https://github.com/heroku/12factor">git</a></small>
+</td>
+<td><a href="https://github.com/adamwiggins" class="user-mention">@adamwiggins</a></td>
+</tr>
+<tr>
+<td>2013</td>
+<td><abbr title="DOCKER"><img class="emoji" alt="ship" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f6a2.png"></abbr></td>
+<td><a href="https://github.com/docker" class="user-mention">@docker</a></td>
+<td><a href="https://github.com/shykes" class="user-mention">@shykes</a></td>
+</tr>
+</tbody>
+</table>
+
+</section>
+<section>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th>Decrease costs, Increase revenue</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><abbr title="LOGS"><img class="emoji" alt="evergreen_tree" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f332.png"></abbr></td>
+<td><abbr title="MEASURE"><img class="emoji" alt="chart_with_upwards_trend" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4c8.png"></abbr></td>
+<td>Easy to diagnose problems</td>
+</tr>
+<tr>
+<td><abbr title="CODE"><img class="emoji" alt="gem" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f48e.png"></abbr></td>
+<td><abbr title="MULTI-TENANT"><img class="emoji" alt="office" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f3e2.png"></abbr></td>
+<td>separate infrastructure and apps</td>
+</tr>
+<tr>
+<td><abbr title="DOGFOOD"><img class="emoji" alt="bento" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f371.png"></abbr></td>
+<td></td>
+<td>maintain 1 set of infrastructure</td>
+</tr>
+<tr>
+<td><abbr title="VERSIONED"><img class="emoji" alt="hash" src="https://assets-cdn.github.com/images/icons/emoji/unicode/0023-20e3.png"></abbr></td>
+<td></td>
+<td>Upgradeable apps</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><abbr title="SCALE"><img class="emoji" alt="rocket" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f680.png"></abbr></td>
+<td></td>
+<td>Easy to add services and scale</td>
+</tr>
+<tr>
+<td><abbr title="CUSTOMER"><img class="emoji" alt="bust_in_silhouette" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f464.png"></abbr></td>
+<td></td>
+<td>Easy to add/privilege users</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+</section>
+
+<section>
+<section>
+
+<h1>Concepts</h1>
+
+</section>
+<section>
+
+<table>
+<thead>
+<tr>
+<th>MIQ</th>
+<th>concepts</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EC2</td>
+<td>run servers</td>
+</tr>
+<tr>
+<td><abbr title="CUSTOMER"><img class="emoji" alt="bust_in_silhouette" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f464.png"></abbr></td>
+<td>monitor and lifecycle workers / servers</td>
+</tr>
+<tr>
+<td><abbr title="WORKER"><img class="emoji" alt="construction_worker" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f477.png"></abbr></td>
+<td>light weight workers</td>
+</tr>
+<tr>
+<td><abbr title="CODE"><img class="emoji" alt="gem" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f48e.png"></abbr></td>
+<td>User code (automate) runs in worker</td>
+</tr>
+<tr>
+<td><abbr title="DOGFOOD"><img class="emoji" alt="bento" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f371.png"></abbr></td>
+<td>Manageiq code runs in workers</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+<section>
+
+<table>
+<thead>
+<tr>
+<th><abbr title="MANY"><img class="emoji" alt="100" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4af.png"></abbr></th>
+<th><abbr title="DISPOSABLE"><img class="emoji" alt="cow" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f42e.png"></abbr></th>
+<th><abbr title="STATELESS"><img class="emoji" alt="innocent" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f607.png"></abbr></th>
+<th><abbr title="SERVICE"><img class="emoji" alt="cloud" src="https://assets-cdn.github.com/images/icons/emoji/unicode/2601.png"></abbr></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><abbr title="CODE"><img class="emoji" alt="gem" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f48e.png"></abbr></td>
+<td><abbr title="CONFIG"><img class="emoji" alt="abcd" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f521.png"></abbr></td>
+<td><abbr title="DATA"><img class="emoji" alt="dvd" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4c0.png"></abbr></td>
+<td><abbr title="MEASURE"><img class="emoji" alt="chart_with_upwards_trend" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4c8.png"></abbr></td>
+</tr>
+<tr>
+<td><abbr title="BUILD"><img class="emoji" alt="construction" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f6a7.png"></abbr></td>
+<td><abbr title="DEPLOY"><img class="emoji" alt="wrench" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f527.png"></abbr></td>
+<td><abbr title="RUNNER"><img class="emoji" alt="runner" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f3c3.png"></abbr></td>
+<td><abbr title="SCALE"><img class="emoji" alt="rocket" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f680.png"></abbr></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><abbr title="DOGFOOD"><img class="emoji" alt="bento" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f371.png"></abbr></td>
+<td><abbr title="VERSIONED"><img class="emoji" alt="hash" src="https://assets-cdn.github.com/images/icons/emoji/unicode/0023-20e3.png"></abbr></td>
+<td><abbr title="URL"><img class="emoji" alt="globe_with_meridians" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f310.png"></abbr></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+</section>
+<section>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="600pt" height="383pt" viewBox="0.00 0.00 600.00 383.00">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 379)">
+<title>factor_flow</title>
+<polygon fill="white" stroke="none" points="-4,4 -4,-379 596,-379 596,4 -4,4"></polygon>
+<g id="clust3" class="cluster"><title>cluster_build</title>
+<polygon fill="none" stroke="black" points="8,-31 8,-201 255,-201 255,-31 8,-31"></polygon>
+</g>
+<g id="clust4" class="cluster"><title>cluster_deploy</title>
+<polygon fill="none" stroke="black" points="276,-31 276,-196 390,-196 390,-31 276,-31"></polygon>
+</g>
+<g id="clust5" class="cluster"><title>cluster_runner</title>
+<polygon fill="none" stroke="black" points="420,-8 420,-196 584,-196 584,-8 420,-8"></polygon>
+</g>
+
+<g id="vm0" class="node"><title>vm0</title>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M62,-244.5C62,-244.5 108,-244.5 108,-244.5 114,-244.5 120,-250.5 120,-256.5 120,-256.5 120,-278.5 120,-278.5 120,-284.5 114,-290.5 108,-290.5 108,-290.5 62,-290.5 62,-290.5 56,-290.5 50,-284.5 50,-278.5 50,-278.5 50,-256.5 50,-256.5 50,-250.5 56,-244.5 62,-244.5"></path>
+<text text-anchor="middle" x="85" y="-275.3" font-family="Helvetica,sans-Serif" font-size="14.00">template</text>
+<polyline fill="none" stroke="black" stroke-width="2" points="50,-267.5 120,-267.5 "></polyline>
+<text text-anchor="middle" x="85" y="-252.3" font-family="Helvetica,sans-Serif" font-size="14.00">OS</text>
+</g>
+
+<g id="build" class="node"><title>build</title>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M169,-151.5C169,-151.5 203,-151.5 203,-151.5 209,-151.5 215,-157.5 215,-163.5 215,-163.5 215,-175.5 215,-175.5 215,-181.5 209,-187.5 203,-187.5 203,-187.5 169,-187.5 169,-187.5 163,-187.5 157,-181.5 157,-175.5 157,-175.5 157,-163.5 157,-163.5 157,-157.5 163,-151.5 169,-151.5"></path>
+<text text-anchor="middle" x="186" y="-165.8" font-family="Helvetica,sans-Serif" font-size="14.00">🚧</text>
+</g>
+
+<g id="edge7" class="edge"><title>vm0-&gt;build</title>
+<path fill="none" stroke="black" d="M108.171,-244.476C125.065,-228.419 147.796,-206.812 164.329,-191.098"></path>
+<polygon fill="black" stroke="black" points="165.55,-192.352 167.969,-187.639 163.139,-189.815 165.55,-192.352"></polygon>
+</g>
+
+<g id="vm1" class="node"><title>vm1</title>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M150.5,-244.5C150.5,-244.5 221.5,-244.5 221.5,-244.5 227.5,-244.5 233.5,-250.5 233.5,-256.5 233.5,-256.5 233.5,-278.5 233.5,-278.5 233.5,-284.5 227.5,-290.5 221.5,-290.5 221.5,-290.5 150.5,-290.5 150.5,-290.5 144.5,-290.5 138.5,-284.5 138.5,-278.5 138.5,-278.5 138.5,-256.5 138.5,-256.5 138.5,-250.5 144.5,-244.5 150.5,-244.5"></path>
+<text text-anchor="middle" x="186" y="-275.3" font-family="Helvetica,sans-Serif" font-size="14.00">template</text>
+<polyline fill="none" stroke="black" stroke-width="2" points="138.5,-267.5 233.5,-267.5 "></polyline>
+<text text-anchor="middle" x="186" y="-252.3" font-family="Helvetica,sans-Serif" font-size="14.00">📺</text>
+</g>
+
+<g id="edge8" class="edge"><title>vm1-&gt;build</title>
+<path fill="none" stroke="black" d="M179.843,-239.219C178.83,-222.596 179.115,-201.872 180.696,-187.552"></path>
+<polygon fill="black" stroke="black" points="178.099,-239.371 180.199,-244.234 181.591,-239.123 178.099,-239.371"></polygon>
+</g>
+
+<g id="edge9" class="edge"><title>vm1-&gt;build</title>
+<path fill="none" stroke="black" d="M191.801,-244.234C193.071,-228.708 193.066,-208.081 191.787,-192.593"></path>
+<polygon fill="black" stroke="black" points="193.523,-192.363 191.304,-187.552 190.039,-192.696 193.523,-192.363"></polygon>
+</g>
+
+<g id="vm2" class="node"><title>vm2</title>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M263.5,-244.5C263.5,-244.5 336.5,-244.5 336.5,-244.5 342.5,-244.5 348.5,-250.5 348.5,-256.5 348.5,-256.5 348.5,-278.5 348.5,-278.5 348.5,-284.5 342.5,-290.5 336.5,-290.5 336.5,-290.5 263.5,-290.5 263.5,-290.5 257.5,-290.5 251.5,-284.5 251.5,-278.5 251.5,-278.5 251.5,-256.5 251.5,-256.5 251.5,-250.5 257.5,-244.5 263.5,-244.5"></path>
+<text text-anchor="middle" x="300" y="-275.3" font-family="Helvetica,sans-Serif" font-size="14.00">template</text>
+<polyline fill="none" stroke="black" stroke-width="2" points="251.5,-267.5 348.5,-267.5 "></polyline>
+<text text-anchor="middle" x="300" y="-252.3" font-family="Helvetica,sans-Serif" font-size="14.00">👤</text>
+</g>
+
+<g id="edge10" class="edge"><title>vm2-&gt;build</title>
+<path fill="none" stroke="black" d="M269.915,-241.166C249.856,-224.274 224.024,-202.52 206.352,-187.639"></path>
+<polygon fill="black" stroke="black" points="268.894,-242.594 273.846,-244.476 271.149,-239.916 268.894,-242.594"></polygon>
+<text text-anchor="middle" x="269.5" y="-214.8" font-family="Helvetica,sans-Serif" font-size="14.00">create</text>
+</g>
+
+<g id="deploy" class="node"><title>deploy</title>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M308.5,-151.5C308.5,-151.5 357.5,-151.5 357.5,-151.5 363.5,-151.5 369.5,-157.5 369.5,-163.5 369.5,-163.5 369.5,-175.5 369.5,-175.5 369.5,-181.5 363.5,-187.5 357.5,-187.5 357.5,-187.5 308.5,-187.5 308.5,-187.5 302.5,-187.5 296.5,-181.5 296.5,-175.5 296.5,-175.5 296.5,-163.5 296.5,-163.5 296.5,-157.5 302.5,-151.5 308.5,-151.5"></path>
+<text text-anchor="middle" x="333" y="-165.8" font-family="Helvetica,sans-Serif" font-size="14.00">🔧</text>
+</g>
+
+<g id="edge12" class="edge"><title>vm2-&gt;deploy</title>
+<path fill="none" stroke="black" d="M307.654,-244.234C312.991,-228.708 320.081,-208.081 325.406,-192.593"></path>
+<polygon fill="black" stroke="black" points="327.168,-192.85 327.138,-187.552 323.858,-191.712 327.168,-192.85"></polygon>
+</g>
+
+<g id="service1" class="node"><title>service1</title>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M379,-244.5C379,-244.5 433,-244.5 433,-244.5 439,-244.5 445,-250.5 445,-256.5 445,-256.5 445,-278.5 445,-278.5 445,-284.5 439,-290.5 433,-290.5 433,-290.5 379,-290.5 379,-290.5 373,-290.5 367,-284.5 367,-278.5 367,-278.5 367,-256.5 367,-256.5 367,-250.5 373,-244.5 379,-244.5"></path>
+<text text-anchor="middle" x="406" y="-275.3" font-family="Helvetica,sans-Serif" font-size="14.00">vm</text>
+<polyline fill="none" stroke="black" stroke-width="2" points="367,-267.5 445,-267.5 "></polyline>
+<text text-anchor="middle" x="406" y="-252.3" font-family="Helvetica,sans-Serif" font-size="14.00">☁</text>
+</g>
+
+<g id="edge13" class="edge"><title>service1-&gt;deploy</title>
+<path fill="none" stroke="black" d="M385.906,-240.075C373.16,-223.313 357.043,-202.118 345.967,-187.552"></path>
+<polygon fill="black" stroke="black" points="384.649,-241.314 389.069,-244.234 387.435,-239.195 384.649,-241.314"></polygon>
+<text text-anchor="middle" x="393.5" y="-214.8" font-family="Helvetica,sans-Serif" font-size="14.00">create</text>
+</g>
+
+<g id="runner" class="node"><title>runner</title>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M476,-151.5C476,-151.5 528,-151.5 528,-151.5 534,-151.5 540,-157.5 540,-163.5 540,-163.5 540,-175.5 540,-175.5 540,-181.5 534,-187.5 528,-187.5 528,-187.5 476,-187.5 476,-187.5 470,-187.5 464,-181.5 464,-175.5 464,-175.5 464,-163.5 464,-163.5 464,-157.5 470,-151.5 476,-151.5"></path>
+<text text-anchor="middle" x="502" y="-165.8" font-family="Helvetica,sans-Serif" font-size="14.00">🏃</text>
+</g>
+
+<g id="edge17" class="edge"><title>service1-&gt;runner</title>
+<path fill="none" stroke="black" d="M432,-240.5C448.827,-223.673 470.258,-202.242 484.948,-187.552"></path>
+<polygon fill="black" stroke="black" points="430.564,-239.461 428.266,-244.234 433.039,-241.936 430.564,-239.461"></polygon>
+</g>
+
+<g id="service3" class="node"><title>service3</title>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M475,-244.5C475,-244.5 529,-244.5 529,-244.5 535,-244.5 541,-250.5 541,-256.5 541,-256.5 541,-278.5 541,-278.5 541,-284.5 535,-290.5 529,-290.5 529,-290.5 475,-290.5 475,-290.5 469,-290.5 463,-284.5 463,-278.5 463,-278.5 463,-256.5 463,-256.5 463,-250.5 469,-244.5 475,-244.5"></path>
+<text text-anchor="middle" x="502" y="-275.3" font-family="Helvetica,sans-Serif" font-size="14.00">vm</text>
+<polyline fill="none" stroke="black" stroke-width="2" points="463,-267.5 541,-267.5 "></polyline>
+<text text-anchor="middle" x="502" y="-252.3" font-family="Helvetica,sans-Serif" font-size="14.00">☁</text>
+</g>
+
+<g id="edge18" class="edge"><title>service3-&gt;runner</title>
+<path fill="none" stroke="black" d="M502,-239.219C502,-222.596 502,-201.872 502,-187.552"></path>
+<polygon fill="black" stroke="black" points="500.25,-239.234 502,-244.234 503.75,-239.234 500.25,-239.234"></polygon>
+</g>
+
+<g id="metrics1" class="node"><title>metrics1</title>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M375,-328.5C375,-328.5 437,-328.5 437,-328.5 443,-328.5 449,-334.5 449,-340.5 449,-340.5 449,-362.5 449,-362.5 449,-368.5 443,-374.5 437,-374.5 437,-374.5 375,-374.5 375,-374.5 369,-374.5 363,-368.5 363,-362.5 363,-362.5 363,-340.5 363,-340.5 363,-334.5 369,-328.5 375,-328.5"></path>
+<text text-anchor="middle" x="406" y="-359.3" font-family="Helvetica,sans-Serif" font-size="14.00">vm</text>
+<polyline fill="none" stroke="black" stroke-width="2" points="363,-351.5 449,-351.5 "></polyline>
+<text text-anchor="middle" x="406" y="-336.3" font-family="Helvetica,sans-Serif" font-size="14.00">📈</text>
+</g>
+
+<g id="edge3" class="edge"><title>metrics1-&gt;service1</title>
+<path fill="none" stroke="black" d="M406,-323.035C406,-312.482 406,-300.581 406,-290.596"></path>
+<polygon fill="black" stroke="black" points="404.25,-323.093 406,-328.093 407.75,-323.093 404.25,-323.093"></polygon>
+</g>
+
+
+<g id="service2" class="node"><title>service2</title>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M487,-328.5C487,-328.5 517,-328.5 517,-328.5 523,-328.5 529,-334.5 529,-340.5 529,-340.5 529,-362.5 529,-362.5 529,-368.5 523,-374.5 517,-374.5 517,-374.5 487,-374.5 487,-374.5 481,-374.5 475,-368.5 475,-362.5 475,-362.5 475,-340.5 475,-340.5 475,-334.5 481,-328.5 487,-328.5"></path>
+<text text-anchor="middle" x="502" y="-359.3" font-family="Helvetica,sans-Serif" font-size="14.00">vm</text>
+<polyline fill="none" stroke="black" stroke-width="2" points="475,-351.5 529,-351.5 "></polyline>
+<text text-anchor="middle" x="502" y="-336.3" font-family="Helvetica,sans-Serif" font-size="14.00">📀</text>
+</g>
+
+<g id="edge1" class="edge"><title>service2-&gt;service1</title>
+<path fill="none" stroke="black" d="M472.104,-324.964C459.257,-313.99 444.382,-301.285 432,-290.708"></path>
+<polygon fill="black" stroke="black" points="471.083,-326.393 476.021,-328.31 473.356,-323.731 471.083,-326.393"></polygon>
+</g>
+
+<g id="edge2" class="edge"><title>service2-&gt;service3</title>
+<path fill="none" stroke="black" d="M502,-323.035C502,-312.482 502,-300.581 502,-290.596"></path>
+<polygon fill="black" stroke="black" points="500.25,-323.093 502,-328.093 503.75,-323.093 500.25,-323.093"></polygon>
+</g>
+
+
+<g id="build_custom1" class="node"><title>build_custom1</title>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M32.5,-146.5C32.5,-146.5 107.5,-146.5 107.5,-146.5 113.5,-146.5 119.5,-152.5 119.5,-158.5 119.5,-158.5 119.5,-180.5 119.5,-180.5 119.5,-186.5 113.5,-192.5 107.5,-192.5 107.5,-192.5 32.5,-192.5 32.5,-192.5 26.5,-192.5 20.5,-186.5 20.5,-180.5 20.5,-180.5 20.5,-158.5 20.5,-158.5 20.5,-152.5 26.5,-146.5 32.5,-146.5"></path>
+<text text-anchor="middle" x="70" y="-177.3" font-family="Helvetica,sans-Serif" font-size="14.00">💎</text>
+<polyline fill="none" stroke="black" stroke-width="2" points="20.5,-169.5 119.5,-169.5 "></polyline>
+<text text-anchor="middle" x="70" y="-154.3" font-family="Helvetica,sans-Serif" font-size="14.00">#</text>
+</g>
+
+<g id="edge4" class="edge"><title>build-&gt;build_custom1</title>
+<path fill="none" stroke="black" d="M151.601,-169.5C141.016,-169.5 130.43,-169.5 119.844,-169.5"></path>
+<polygon fill="black" stroke="black" points="151.798,-171.25 156.798,-169.5 151.798,-167.75 151.798,-171.25"></polygon>
+</g>
+
+<g id="build_custom" class="node"><title>build_custom</title>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M28.5,-39.5C28.5,-39.5 101.5,-39.5 101.5,-39.5 107.5,-39.5 113.5,-45.5 113.5,-51.5 113.5,-51.5 113.5,-73.5 113.5,-73.5 113.5,-79.5 107.5,-85.5 101.5,-85.5 101.5,-85.5 28.5,-85.5 28.5,-85.5 22.5,-85.5 16.5,-79.5 16.5,-73.5 16.5,-73.5 16.5,-51.5 16.5,-51.5 16.5,-45.5 22.5,-39.5 28.5,-39.5"></path>
+<text text-anchor="middle" x="65" y="-70.3" font-family="Helvetica,sans-Serif" font-size="14.00">reports.yml</text>
+<polyline fill="none" stroke="black" stroke-width="2" points="16.5,-62.5 113.5,-62.5 "></polyline>
+<text text-anchor="middle" x="65" y="-47.3" font-family="Helvetica,sans-Serif" font-size="14.00">👤</text>
+</g>
+
+<g id="edge5" class="edge"><title>build-&gt;build_custom</title>
+<path fill="none" stroke="black" d="M162.289,-147.925C141.645,-130.01 111.787,-104.1 90.6032,-85.7177"></path>
+<polygon fill="black" stroke="black" points="161.367,-149.441 166.29,-151.396 163.661,-146.797 161.367,-149.441"></polygon>
+</g>
+
+<g id="vm_build_config" class="node"><title>vm_build_config</title>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M143.5,-39.5C143.5,-39.5 234.5,-39.5 234.5,-39.5 240.5,-39.5 246.5,-45.5 246.5,-51.5 246.5,-51.5 246.5,-73.5 246.5,-73.5 246.5,-79.5 240.5,-85.5 234.5,-85.5 234.5,-85.5 143.5,-85.5 143.5,-85.5 137.5,-85.5 131.5,-79.5 131.5,-73.5 131.5,-73.5 131.5,-51.5 131.5,-51.5 131.5,-45.5 137.5,-39.5 143.5,-39.5"></path>
+<text text-anchor="middle" x="189" y="-70.3" font-family="Helvetica,sans-Serif" font-size="14.00">🔡 💎</text>
+<polyline fill="none" stroke="black" stroke-width="2" points="131.5,-62.5 246.5,-62.5 "></polyline>
+<text text-anchor="middle" x="189" y="-47.3" font-family="Helvetica,sans-Serif" font-size="14.00">👤</text>
+</g>
+
+<g id="edge6" class="edge"><title>build-&gt;vm_build_config</title>
+<path fill="none" stroke="black" d="M186.647,-145.864C187.156,-128.031 187.863,-103.312 188.368,-85.6155"></path>
+<polygon fill="black" stroke="black" points="184.889,-146.113 186.495,-151.161 188.388,-146.213 184.889,-146.113"></polygon>
+</g>
+
+<g id="deploy_config" class="node"><title>deploy_config</title>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M296.5,-39.5C296.5,-39.5 369.5,-39.5 369.5,-39.5 375.5,-39.5 381.5,-45.5 381.5,-51.5 381.5,-51.5 381.5,-73.5 381.5,-73.5 381.5,-79.5 375.5,-85.5 369.5,-85.5 369.5,-85.5 296.5,-85.5 296.5,-85.5 290.5,-85.5 284.5,-79.5 284.5,-73.5 284.5,-73.5 284.5,-51.5 284.5,-51.5 284.5,-45.5 290.5,-39.5 296.5,-39.5"></path>
+<text text-anchor="middle" x="333" y="-70.3" font-family="Helvetica,sans-Serif" font-size="14.00">🔡</text>
+<polyline fill="none" stroke="black" stroke-width="2" points="284.5,-62.5 381.5,-62.5 "></polyline>
+<text text-anchor="middle" x="333" y="-47.3" font-family="Helvetica,sans-Serif" font-size="14.00">👤</text>
+</g>
+
+<g id="edge11" class="edge"><title>deploy-&gt;deploy_config</title>
+<path fill="none" stroke="black" d="M333,-145.864C333,-128.031 333,-103.312 333,-85.6155"></path>
+<polygon fill="black" stroke="black" points="331.25,-146.161 333,-151.161 334.75,-146.161 331.25,-146.161"></polygon>
+</g>
+
+<g id="runner_data" class="node"><title>runner_data</title>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M440,-16.5C440,-16.5 564,-16.5 564,-16.5 570,-16.5 576,-22.5 576,-28.5 576,-28.5 576,-96.5 576,-96.5 576,-102.5 570,-108.5 564,-108.5 564,-108.5 440,-108.5 440,-108.5 434,-108.5 428,-102.5 428,-96.5 428,-96.5 428,-28.5 428,-28.5 428,-22.5 434,-16.5 440,-16.5"></path>
+<text text-anchor="middle" x="502" y="-93.3" font-family="Helvetica,sans-Serif" font-size="14.00">📀</text>
+<polyline fill="none" stroke="black" stroke-width="2" points="428,-85.5 576,-85.5 "></polyline>
+<text text-anchor="middle" x="469" y="-70.3" font-family="Helvetica,sans-Serif" font-size="14.00">☁</text>
+<polyline fill="none" stroke="black" stroke-width="2" points="510,-62.5 510,-85.5 "></polyline>
+<text text-anchor="middle" x="543" y="-70.3" font-family="Helvetica,sans-Serif" font-size="14.00">🚀</text>
+<polyline fill="none" stroke="black" stroke-width="2" points="428,-62.5 576,-62.5 "></polyline>
+<text text-anchor="middle" x="469" y="-47.3" font-family="Helvetica,sans-Serif" font-size="14.00">☁</text>
+<polyline fill="none" stroke="black" stroke-width="2" points="510,-39.5 510,-62.5 "></polyline>
+<text text-anchor="middle" x="543" y="-47.3" font-family="Helvetica,sans-Serif" font-size="14.00">🚀</text>
+<polyline fill="none" stroke="black" stroke-width="2" points="428,-39.5 576,-39.5 "></polyline>
+<text text-anchor="middle" x="471" y="-24.3" font-family="Helvetica,sans-Serif" font-size="14.00">📈</text>
+<polyline fill="none" stroke="black" stroke-width="2" points="514,-16.5 514,-39.5 "></polyline>
+<text text-anchor="middle" x="545" y="-24.3" font-family="Helvetica,sans-Serif" font-size="14.00">🚀</text>
+</g>
+
+<g id="edge14" class="edge"><title>runner-&gt;runner_data</title>
+<path fill="none" stroke="black" d="M502,-146.007C502,-135.05 502,-121.466 502,-108.505"></path>
+<polygon fill="black" stroke="black" points="500.25,-146.161 502,-151.161 503.75,-146.161 500.25,-146.161"></polygon>
+</g>
+</g>
+</svg>
+</section>
+<section>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th>translation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><abbr title="BUILD"><img class="emoji" alt="construction" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f6a7.png"></abbr></td>
+<td>John</td>
+<td>docker file, vmware templates</td>
+</tr>
+<tr>
+<td><abbr title="DEPLOY"><img class="emoji" alt="wrench" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f527.png"></abbr></td>
+<td>automate</td>
+<td>kickstart, app console</td>
+</tr>
+<tr>
+<td><abbr title="RUNNER"><img class="emoji" alt="runner" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f3c3.png"></abbr></td>
+<td><abbr title="APPLIANCE"><img class="emoji" alt="tv" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4fa.png"></abbr></td>
+<td>Runner runs containers (docker)</td>
+</tr>
+<tr>
+<td><abbr title="SERVICE"><img class="emoji" alt="cloud" src="https://assets-cdn.github.com/images/icons/emoji/unicode/2601.png"></abbr></td>
+<td><abbr title="WORKER"><img class="emoji" alt="construction_worker" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f477.png"></abbr></td>
+<td>container (custom or miq code)</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+<section>
+<aside class="notes">- code, on disk changes at build time. set by us and unique per version.
+  (column row, blob keys count. migrations to help, REST response schema)
+- config changes at deploy time, put into the env
+  unique per customer. url has versioning information in it.
+- data, in the database changes at runtime. set by many services and unique by time.
+
+Interesting:
+- What does not match changing model (or versioning)
+- When <abbr title="CONFIG"><img class="emoji" alt="abcd" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f521.png"></abbr> considered <abbr title="DATA"><img class="emoji" alt="dvd" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4c0.png"></abbr> (<abbr title="SEPARATE"><img class="emoji" alt="scissors" src="https://assets-cdn.github.com/images/icons/emoji/unicode/2702.png"></abbr>) e.g.: providers
+- When <abbr title="CODE"><img class="emoji" alt="gem" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f48e.png"></abbr> is considered <abbr title="DATA"><img class="emoji" alt="dvd" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4c0.png"></abbr> e.g.: automate
+- When <abbr title="CODE"><img class="emoji" alt="gem" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f48e.png"></abbr> is not stored on <abbr title="FILE"><img class="emoji" alt="file_folder" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4c1.png"></abbr>
+
+TODO: <abbr title="CODE"><img class="emoji" alt="gem" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f48e.png"></abbr> (comment on automate)
+TODO: <abbr title="CODE"><img class="emoji" alt="gem" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f48e.png"></abbr> (url has server, code determines version / to match own api)
+
+</aside>
+<table>
+<thead>
+<tr>
+<th><abbr title="CONSTRAINED"><img class="emoji" alt="lock" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f512.png"></abbr></th>
+<th></th>
+<th><abbr title="CHANGING"><img class="emoji" alt="black_joker" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f0cf.png"></abbr></th>
+<th></th>
+<th>e.g.</th>
+<th><abbr title="VERSIONED"><img class="emoji" alt="hash" src="https://assets-cdn.github.com/images/icons/emoji/unicode/0023-20e3.png"></abbr></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><abbr title="CODE"><img class="emoji" alt="gem" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f48e.png"></abbr></td>
+<td><abbr title="FILE"><img class="emoji" alt="file_folder" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4c1.png"></abbr></td>
+<td><abbr title="BUILD"><img class="emoji" alt="construction" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f6a7.png"></abbr></td>
+<td>MIQ</td>
+<td>
+<code>schema.rb</code>, api, keys</td>
+<td><abbr title="YES"><img class="emoji" alt="ballot_box_with_check" src="https://assets-cdn.github.com/images/icons/emoji/unicode/2611.png"></abbr></td>
+</tr>
+<tr>
+<td><abbr title="CONFIG"><img class="emoji" alt="abcd" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f521.png"></abbr></td>
+<td><code>ENV*</code></td>
+<td><abbr title="DEPLOY"><img class="emoji" alt="wrench" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f527.png"></abbr></td>
+<td><abbr title="ROOT"><img class="emoji" alt="cop" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f46e.png"></abbr></td>
+<td><abbr title="URL"><img class="emoji" alt="globe_with_meridians" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f310.png"></abbr></td>
+<td><abbr title="UNKNOWN"><img class="emoji" alt="grey_question" src="https://assets-cdn.github.com/images/icons/emoji/unicode/2754.png"></abbr></td>
+</tr>
+<tr>
+<td><abbr title="DATA"><img class="emoji" alt="dvd" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4c0.png"></abbr></td>
+<td><abbr title="DATABASE"><img class="emoji" alt="mailbox" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4eb.png"></abbr></td>
+<td><abbr title="RUNNER"><img class="emoji" alt="runner" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f3c3.png"></abbr></td>
+<td><abbr title="CUSTOMER"><img class="emoji" alt="bust_in_silhouette" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f464.png"></abbr></td>
+<td>vms, hosts, providers</td>
+<td><abbr title="NO"><img class="emoji" alt="white_medium_square" src="https://assets-cdn.github.com/images/icons/emoji/unicode/25fb.png"></abbr></td>
+</tr>
+<tr>
+<td><abbr title="LOGS"><img class="emoji" alt="evergreen_tree" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f332.png"></abbr></td>
+<td><abbr title="MEASURE"><img class="emoji" alt="chart_with_upwards_trend" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4c8.png"></abbr></td>
+<td><abbr title="RUNNER"><img class="emoji" alt="runner" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f3c3.png"></abbr></td>
+<td><abbr title="ANYTIME"><img class="emoji" alt="alarm_clock" src="https://assets-cdn.github.com/images/icons/emoji/unicode/23f0.png"></abbr></td>
+<td>logs, events</td>
+<td><abbr title="NO"><img class="emoji" alt="white_medium_square" src="https://assets-cdn.github.com/images/icons/emoji/unicode/25fb.png"></abbr></td>
+</tr>
+</tbody>
+</table>
+
+</section>
+</section>
+
+<section>
+<section>
+<aside class="notes">move these elsewhere?
+</aside>
+<p>Rants</p>
+
+</section>
+<section>
+
+<table>
+<thead>
+<tr>
+<th><abbr title="TURTLE"><img class="emoji" alt="turtle" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f422.png"></abbr></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><abbr title="RUNNER"><img class="emoji" alt="runner" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f3c3.png"></abbr></td>
+<td>EC2/vmware is runner</td>
+</tr>
+<tr>
+<td><abbr title="RUNNER"><img class="emoji" alt="runner" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f3c3.png"></abbr></td>
+<td>appliance/docker is runner</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+<section>
+
+<table>
+<thead>
+<tr>
+<th><abbr title="SCALE"><img class="emoji" alt="rocket" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f680.png"></abbr></th>
+<th></th>
+<th><abbr title="DISPOSABLE"><img class="emoji" alt="cow" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f42e.png"></abbr></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><abbr title="CONFIG"><img class="emoji" alt="abcd" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f521.png"></abbr></td>
+<td><code>GUID</code></td>
+<td><abbr title="PET"><img class="emoji" alt="dog" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f436.png"></abbr></td>
+<td></td>
+</tr>
+<tr>
+<td><abbr title="CONFIG"><img class="emoji" alt="abcd" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f521.png"></abbr></td>
+<td><abbr title="FILE"><img class="emoji" alt="file_folder" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4c1.png"></abbr></td>
+<td><abbr title="PET"><img class="emoji" alt="dog" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f436.png"></abbr></td>
+<td></td>
+</tr>
+<tr>
+<td><abbr title="RUNNER"><img class="emoji" alt="runner" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f3c3.png"></abbr></td>
+<td><abbr title="WORKER"><img class="emoji" alt="construction_worker" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f477.png"></abbr></td>
+<td><abbr title="DISPOSABLE"><img class="emoji" alt="cow" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f42e.png"></abbr></td>
+<td></td>
+</tr>
+<tr>
+<td><abbr title="DISCOVERY"><img class="emoji" alt="notebook" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4d3.png"></abbr></td>
+<td><abbr title="WORKER"><img class="emoji" alt="construction_worker" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f477.png"></abbr></td>
+<td><abbr title="DISPOSABLE"><img class="emoji" alt="cow" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f42e.png"></abbr></td>
+<td>remove cleanup</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+<section>
+<pre><code class="notes:">- constantly testing
+- meet business needs (which should be same as customers)
+- fewer surprises
+</code></pre>
+<table>
+<thead>
+<tr>
+<th><abbr title="DOGFOOD"><img class="emoji" alt="bento" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f371.png"></abbr></th>
+<th>QE/Dev/prod parity</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><abbr title="SERVICE"><img class="emoji" alt="cloud" src="https://assets-cdn.github.com/images/icons/emoji/unicode/2601.png"></abbr></td>
+<td>all use message queue</td>
+</tr>
+<tr>
+<td><abbr title="DEPLOY"><img class="emoji" alt="wrench" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f527.png"></abbr></td>
+<td>appliance console, not <a href="https://github.com/RedHatQE/cfme_tests/blob/master/utils/appliance.py">qe scripts</a>, <a href="https://github.com/ManageIQ/cfme_tools/tree/master/fusion-dev-appliance-setup">dev scripts</a>
+</td>
+</tr>
+<tr>
+<td><abbr title="DATA"><img class="emoji" alt="dvd" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4c0.png"></abbr></td>
+<td>Correct Postgres version</td>
+</tr>
+<tr>
+<td><abbr title="WORKER"><img class="emoji" alt="construction_worker" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f477.png"></abbr></td>
+<td>Use workers not simulate</td>
+</tr>
+<tr>
+<td>DEV</td>
+<td>use apache, workers, replication, ipa</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+</section>
+
+<section>
+<section>
+
+<h1>
+<abbr title="SEPARATE"><img class="emoji" alt="scissors" src="https://assets-cdn.github.com/images/icons/emoji/unicode/2702.png"></abbr> <abbr title="CONSTRAINED"><img class="emoji" alt="lock" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f512.png"></abbr> Road Map</h1>
+
+</section>
+<section>
+
+<table>
+<thead>
+<tr>
+<th><abbr title="MULTI-TENANT"><img class="emoji" alt="office" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f3e2.png"></abbr></th>
+<th><abbr title="SEPARATE"><img class="emoji" alt="scissors" src="https://assets-cdn.github.com/images/icons/emoji/unicode/2702.png"></abbr></th>
+<th> </th>
+<th><abbr title="MULTI-TENANT"><img class="emoji" alt="office" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f3e2.png"></abbr></th>
+<th><abbr title="CONSTRAINED"><img class="emoji" alt="lock" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f512.png"></abbr></th>
+<th> </th>
+<th><abbr title="SCALE"><img class="emoji" alt="rocket" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f680.png"></abbr></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><abbr title="CONFIG"><img class="emoji" alt="abcd" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f521.png"></abbr></td>
+<td>vmdb.yml</td>
+<td></td>
+<td><abbr title="APPLIANCE"><img class="emoji" alt="tv" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4fa.png"></abbr></td>
+<td>read only?</td>
+<td></td>
+<td><abbr title="YES"><img class="emoji" alt="ballot_box_with_check" src="https://assets-cdn.github.com/images/icons/emoji/unicode/2611.png"></abbr></td>
+</tr>
+<tr>
+<td><abbr title="DATA"><img class="emoji" alt="dvd" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4c0.png"></abbr></td>
+<td>hosts, vm</td>
+<td></td>
+<td><abbr title="ROOT"><img class="emoji" alt="cop" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f46e.png"></abbr></td>
+<td>groups</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><abbr title="CODE"><img class="emoji" alt="gem" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f48e.png"></abbr></td>
+<td>automate</td>
+<td></td>
+<td><abbr title="API"><img class="emoji" alt="door" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f6aa.png"></abbr></td>
+<td>APIs</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><abbr title="CUSTOMER"><img class="emoji" alt="bust_in_silhouette" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f464.png"></abbr></td>
+<td>reports.yml</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+</section>
+</section>
+
+<section>
+<section>
+
+<table>
+<thead>
+<tr>
+<th><abbr title="CONFIG"><img class="emoji" alt="abcd" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f521.png"></abbr></th>
+<th>review</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><abbr title="FILE"><img class="emoji" alt="file_folder" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4c1.png"></abbr></td>
+<td>
+<abbr title="URL"><img class="emoji" alt="globe_with_meridians" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f310.png"></abbr> in ENV</td>
+</tr>
+<tr>
+<td><abbr title="DEPLOY"><img class="emoji" alt="wrench" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f527.png"></abbr></td>
+<td>Changes at deploy only</td>
+</tr>
+<tr>
+<td><abbr title="CODE"><img class="emoji" alt="gem" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f48e.png"></abbr></td>
+<td>same for all users, then it is code</td>
+</tr>
+<tr>
+<td><abbr title="DATA"><img class="emoji" alt="dvd" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4c0.png"></abbr></td>
+<td>If it needs to change, then it is data</td>
+</tr>
+<tr>
+<td><abbr title="CUSTOMER"><img class="emoji" alt="bust_in_silhouette" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f464.png"></abbr></td>
+<td>Different user than adding a provider</td>
+</tr>
+<tr>
+<td><abbr title="SEPARATE"><img class="emoji" alt="scissors" src="https://assets-cdn.github.com/images/icons/emoji/unicode/2702.png"></abbr></td>
+<td>Divide by where, when, who changes.</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+<section>
+<aside class="notes">smtp password to database
+tenant
+</aside>
+<table>
+<thead>
+<tr>
+<th><abbr title="CONFIG"><img class="emoji" alt="abcd" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f521.png"></abbr></th>
+<th>appliance console action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><abbr title="ROOT"><img class="emoji" alt="cop" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f46e.png"></abbr></td>
+<td>move appliance configuration to console</td>
+</tr>
+<tr>
+<td><abbr title="CUSTOMER"><img class="emoji" alt="bust_in_silhouette" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f464.png"></abbr></td>
+<td>move customizations/passwords to database</td>
+</tr>
+<tr>
+<td><abbr title="URL"><img class="emoji" alt="globe_with_meridians" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f310.png"></abbr></td>
+<td>miq_auth: add host (use url)</td>
+</tr>
+<tr>
+<td><abbr title="CONSTRAINED"><img class="emoji" alt="lock" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f512.png"></abbr></td>
+<td>enable console for admins (no root)</td>
+</tr>
+<tr>
+<td><abbr title="GIT"><img class="emoji" alt="octocat" src="https://assets-cdn.github.com/images/icons/emoji/octocat.png"></abbr></td>
+<td>Move to own repo / own Gemfile</td>
+</tr>
+<tr>
+<td><abbr title="WORKER"><img class="emoji" alt="construction_worker" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f477.png"></abbr></td>
+<td>Move ruby rep out of vmdb.yml to console</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+<section>
+<aside class="notes">separate # workers from runtime(provider) data
+one time password
+</aside>
+<table>
+<thead>
+<tr>
+<th><abbr title="CONFIG"><img class="emoji" alt="abcd" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f521.png"></abbr></th>
+<th>Wish list</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><abbr title="DEPLOY"><img class="emoji" alt="wrench" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f527.png"></abbr></td>
+<td>welcome packet, IdM OTP</td>
+</tr>
+<tr>
+<td><abbr title="DEPLOY"><img class="emoji" alt="wrench" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f527.png"></abbr></td>
+<td>expose console in cloudinit</td>
+</tr>
+<tr>
+<td><abbr title="DISPOSABLE"><img class="emoji" alt="cow" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f42e.png"></abbr></td>
+<td>Use zone not GUID</td>
+</tr>
+<tr>
+<td><abbr title="RUNNER"><img class="emoji" alt="runner" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f3c3.png"></abbr></td>
+<td>separate runner and worker config</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+</section>
+
+<section>
+<section>
+
+<table>
+<thead>
+<tr>
+<th><abbr title="CODE"><img class="emoji" alt="gem" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f48e.png"></abbr></th>
+<th></th>
+<th>review</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><abbr title="VERSIONED"><img class="emoji" alt="hash" src="https://assets-cdn.github.com/images/icons/emoji/unicode/0023-20e3.png"></abbr></td>
+<td><abbr title="API"><img class="emoji" alt="door" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f6aa.png"></abbr></td>
+<td>
+<abbr title="MESSAGE BUS"><img class="emoji" alt="bus" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f68c.png"></abbr> <abbr title="DATA"><img class="emoji" alt="dvd" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4c0.png"></abbr> blob <abbr title="CONFIG"><img class="emoji" alt="abcd" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f521.png"></abbr>
+</td>
+</tr>
+<tr>
+<td><abbr title="BUILD"><img class="emoji" alt="construction" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f6a7.png"></abbr></td>
+<td><abbr title="GIT"><img class="emoji" alt="octocat" src="https://assets-cdn.github.com/images/icons/emoji/octocat.png"></abbr></td>
+<td>Changes at build only (<abbr title="GIT"><img class="emoji" alt="octocat" src="https://assets-cdn.github.com/images/icons/emoji/octocat.png"></abbr>)</td>
+</tr>
+<tr>
+<td><abbr title="FILE"><img class="emoji" alt="file_folder" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4c1.png"></abbr></td>
+<td></td>
+<td>Another container or data</td>
+</tr>
+<tr>
+<td>MIQ</td>
+<td></td>
+<td>Same for all miq users</td>
+</tr>
+<tr>
+<td><abbr title="SEPARATE"><img class="emoji" alt="scissors" src="https://assets-cdn.github.com/images/icons/emoji/unicode/2702.png"></abbr></td>
+<td></td>
+<td>Divide config vs data</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+<section>
+<aside class="notes">automate is long living git branches
+</aside>
+<table>
+<thead>
+<tr>
+<th><abbr title="CODE"><img class="emoji" alt="gem" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f48e.png"></abbr></th>
+<th></th>
+<th>actions for automate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><abbr title="CONSTRAINED"><img class="emoji" alt="lock" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f512.png"></abbr></td>
+<td><abbr title="ROOT"><img class="emoji" alt="cop" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f46e.png"></abbr></td>
+<td>Run as non root</td>
+</tr>
+<tr>
+<td><abbr title="CONSTRAINED"><img class="emoji" alt="lock" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f512.png"></abbr></td>
+<td><abbr title="DATA"><img class="emoji" alt="dvd" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4c0.png"></abbr></td>
+<td>block breaking into database <abbr title="API"><img class="emoji" alt="door" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f6aa.png"></abbr>
+</td>
+</tr>
+<tr>
+<td><abbr title="VERSIONED"><img class="emoji" alt="hash" src="https://assets-cdn.github.com/images/icons/emoji/unicode/0023-20e3.png"></abbr></td>
+<td><abbr title="API"><img class="emoji" alt="door" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f6aa.png"></abbr></td>
+<td>vmdb version</td>
+</tr>
+<tr>
+<td><abbr title="VERSIONED"><img class="emoji" alt="hash" src="https://assets-cdn.github.com/images/icons/emoji/unicode/0023-20e3.png"></abbr></td>
+<td><abbr title="FILE"><img class="emoji" alt="file_folder" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4c1.png"></abbr></td>
+<td>automate version/monkey patching</td>
+</tr>
+<tr>
+<td><abbr title="CUSTOMER"><img class="emoji" alt="bust_in_silhouette" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f464.png"></abbr></td>
+<td></td>
+<td>Process to add endpoints (vs overwrite)</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><abbr title="SEPARATE"><img class="emoji" alt="scissors" src="https://assets-cdn.github.com/images/icons/emoji/unicode/2702.png"></abbr></td>
+<td>MIQ</td>
+<td>Automate yml files are not vmdb</td>
+</tr>
+<tr>
+<td><abbr title="FORK"><img class="emoji" alt="fork_and_knife" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f374.png"></abbr></td>
+<td><abbr title="URL"><img class="emoji" alt="globe_with_meridians" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f310.png"></abbr></td>
+<td>long running automate process</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+<section>
+<aside class="notes">every method is public interface (not tested)
+</aside>
+<table>
+<thead>
+<tr>
+<th><abbr title="CODE"><img class="emoji" alt="gem" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f48e.png"></abbr></th>
+<th><abbr title="MESSAGE BUS"><img class="emoji" alt="bus" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f68c.png"></abbr></th>
+<th>actions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><abbr title="VERSIONED"><img class="emoji" alt="hash" src="https://assets-cdn.github.com/images/icons/emoji/unicode/0023-20e3.png"></abbr></td>
+<td><abbr title="API"><img class="emoji" alt="door" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f6aa.png"></abbr></td>
+<td>add vmdb version number (rpc)</td>
+</tr>
+<tr>
+<td><abbr title="CONSTRAINED"><img class="emoji" alt="lock" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f512.png"></abbr></td>
+<td><abbr title="API"><img class="emoji" alt="door" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f6aa.png"></abbr></td>
+<td>messages not methods</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><abbr title="DISPOSABLE"><img class="emoji" alt="cow" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f42e.png"></abbr></td>
+<td></td>
+<td>Use zone not GUID</td>
+</tr>
+<tr>
+<td><abbr title="WORKER"><img class="emoji" alt="construction_worker" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f477.png"></abbr></td>
+<td></td>
+<td>generic worker (fewer queues)</td>
+</tr>
+<tr>
+<td><abbr title="CONSTRAINED"><img class="emoji" alt="lock" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f512.png"></abbr></td>
+<td><abbr title="MESSAGE BUS"><img class="emoji" alt="bus" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f68c.png"></abbr></td>
+<td>don't modify queue</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+<section>
+
+<table>
+<thead>
+<tr>
+<th><abbr title="CODE"><img class="emoji" alt="gem" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f48e.png"></abbr></th>
+<th></th>
+<th>vmdb actions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><abbr title="CONFIG"><img class="emoji" alt="abcd" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f521.png"></abbr></td>
+<td></td>
+<td>Move config to appliance console</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><abbr title="RUNNER"><img class="emoji" alt="runner" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f3c3.png"></abbr></td>
+<td></td>
+<td>Extract runner/worker to own code base</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+</section>
+
+<section>
+<section>
+
+<h1>General action items</h1>
+
+<p>aka ran out of time to present</p>
+
+</section>
+<section>
+
+<table>
+<thead>
+<tr>
+<th><abbr title="DATA"><img class="emoji" alt="dvd" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4c0.png"></abbr></th>
+<th>actions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><abbr title="DATA"><img class="emoji" alt="dvd" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4c0.png"></abbr></td>
+<td>Introduce tenant models</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><abbr title="DISPOSABLE"><img class="emoji" alt="cow" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f42e.png"></abbr></td>
+<td>pull postgres out of appliance</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+<section>
+
+<table>
+<thead>
+<tr>
+<th><abbr title="MEASURE"><img class="emoji" alt="chart_with_upwards_trend" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4c8.png"></abbr></th>
+<th>actions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LOG</td>
+<td>RHCI agregate logs / partition by tenant</td>
+</tr>
+<tr>
+<td>LOG</td>
+<td>miq_top -&gt; standard events / metrics</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+<section>
+
+<table>
+<thead>
+<tr>
+<th><abbr title="DEBT"><img class="emoji" alt="moneybag" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4b0.png"></abbr></th>
+<th>wishlist</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><abbr title="CODE"><img class="emoji" alt="gem" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f48e.png"></abbr></td>
+<td>remove code that is not core competency</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+</section>
+
+<section>
+<section>
+
+<h1>FAQ</h1>
+
+</section>
+<section>
+
+<h2>This looks like it will take a while.</h2>
+
+<p>Why put everything on hold for 2 years?</p>
+
+<p>No, only change what will make your current project work better.
+At the very least, just don't introduce state into the wrong place.</p>
+
+</section>
+<section>
+
+<h1>Can you explain the steps necessary to get us there?</h1>
+
+<p>For Multi-tenancy,  <a href="#/5/1">high level</a>, see <a href="#/6/1">slides</a></p>
+
+</section>
+<section>
+
+<h1>Is the goal to introduce Docker?</h1>
+
+<p>No, while docker and all PaaS use 12factor principles, that is not the goal.</p>
+
+<p>The goal is to put state in the correct place. This makes it easier to host the appliance on all platforms, including Docker.</p>
+
+</section>
+<section>
+
+<h1>Is this really necessary?</h1>
+
+<p>Nope, our app works just fine right the way it is.</p>
+
+<p>But most of our pain points are simply fighting the basic principles of state as found on the <a href="#/3/5">grid</a>.</p>
+
+</section>
+<section>
+
+<h1>Principles of state?</h1>
+
+<p>Every algorithm has assumptions, inputs, and process.
+12 factors simply names them and shares how they work together.</p>
+
+
+
+</section>
+</section>
+
+  </div>
+</div>
+
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.js"></script>
+
+<script>
+  (function() {
+  function extend( a, b ) {
+    for(var i in b) {
+      a[i] = b[i];
+    }
+  }
+  var baseOptions = {
+    transition: 'default',
+
+    dependencies: [
+      { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+      { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      { src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+      { src: 'plugin/zoom-js/zoom.js', async: true },
+      { src: 'plugin/notes/notes.js', async: true }
+    ]
+  };
+  var configOptions = {"controls":true,"progress":true,"history":true,"center":true}
+  var initializeOptions = {};
+  extend(initializeOptions, baseOptions);
+  extend(initializeOptions, configOptions);
+  Reveal.initialize(initializeOptions);
+})();
+
+</script>
+
+  </body>
+</html>
