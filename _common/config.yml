@@ -1,3 +1,4 @@
+theme: kblack
 filters:
 - "HTML::Pipeline::DotFilter"
 - "HTML::Pipeline::AutoAbbrFilter"
