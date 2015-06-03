@@ -223,7 +223,7 @@ RUNNER    |separate runner and worker config
 CODE     |      |review
 ---------|------|----------
 VERSIONED|API   |MESSAGE BUS DATA blob CONFIG
-BUILD    |GIT   |Changes at build only (GIT)
+BUILD    |GIT   |Changes at build only
 FILE     |      |Another container or data
 MIQ      |      |Same for all miq users
 SEPARATE |      |Divide config vs data
@@ -263,6 +263,7 @@ RUNNER| |Extract runner/worker to own code base
 ***
 # General action items
 aka ran out of time to present
+
 ---
 DATA|actions
 ---|---
@@ -287,19 +288,23 @@ Why put everything on hold for 2 years?
 
 No, only change what will make your current project work better.
 At the very least, just don't introduce state into the wrong place.
+
 ---
 # Can you explain the steps necessary to get us there?
 For Multi-tenancy,  [high level](#/5/1), see [slides](#/6/1)
+
 ---
 # Is the goal to introduce Docker?
 No, while docker and all PaaS use 12factor principles, that is not the goal.
 
 The goal is to put state in the correct place. This makes it easier to host the appliance on all platforms, including Docker.
+
 ---
 # Is this really necessary?
 Nope, our app works just fine right the way it is.
 
 But most of our pain points are simply fighting the basic principles of state as found on the [grid](#/3/5).
+
 ---
 # Principles of state?
 Every algorithm has assumptions, inputs, and process.
