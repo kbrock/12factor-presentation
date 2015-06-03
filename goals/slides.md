@@ -159,7 +159,7 @@ CONFIG|FILE|PET
 RUNNER|WORKER|DISPOSABLE
 DISCOVERY|WORKER|DISPOSABLE|remove cleanup
 ---
-```notes:
+```notes
 - constantly testing
 - meet business needs (which should be same as customers)
 - fewer surprises
