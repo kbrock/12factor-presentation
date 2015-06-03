@@ -1,4 +1,14 @@
 # MULTI-TENANT Multi-tenancy
+---
+# Summary
+- We want to make our app multi-tenant aware.
+- "12 factors" are guidelines.
+- They help make our product multi-tenant aware.
+- They also help in other areas as well.
+---
+**NOTE:** Yes, this is dense.
+
+It summarizes a 560 page book.
 ***
 # MULTI-TENANT Goals
 ---
@@ -47,7 +57,7 @@ EC2     |run servers
 CUSTOMER|monitor and lifecycle workers / servers
 WORKER  |light weight workers
 CODE    |User code (automate) runs in worker
-DOGFOOD |Manageiq code runs in workers
+DOGFOOD |Manageiq code runs in workers too
 ---
 MANY|DISPOSABLE|STATELESS|SERVICE|
 ---|---|---|---
@@ -145,13 +155,19 @@ LOGS  |MEASURE |RUNNER  |ANYTIME  |logs, events            |NO
 ```notes
 move these elsewhere?
 ```
-Rants
+First off
 ---
+```notes
+turtles all the way down. vmware = docker = worker
+```
 TURTLE| |
 ---|---
 RUNNER|EC2/vmware is runner
 RUNNER|appliance/docker is runner
 ---
+```notes
+we are going towards disposable appliances
+```
 SCALE||DISPOSABLE| |
 ---|---|---|---
 CONFIG|`GUID`|PET
@@ -291,7 +307,7 @@ At the very least, just don't introduce state into the wrong place.
 
 ---
 # Can you explain the steps necessary to get us there?
-For Multi-tenancy,  [high level](#/5/1), see [slides](#/6/1)
+For Multi-tenancy,  [high level](#/6/1), see [low level](#/7/1)
 
 ---
 # Is the goal to introduce Docker?
