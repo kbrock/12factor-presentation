@@ -3,24 +3,37 @@
 <h1>
 <abbr title="MULTI-TENANT"><img class="emoji" alt="office" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f3e2.png"></abbr> Multi-tenancy</h1>
 
-</section>
-<section>
-
-<h1>Summary</h1>
-
-<ul>
-<li>We want to make our app multi-tenant aware.</li>
-<li>"12 factors" are guidelines.</li>
-<li>They help make our product multi-tenant aware.</li>
-<li>They also help in other areas as well.</li>
-</ul>
+<p>Leveraging 12 factor application guidelines</p>
 
 </section>
 <section>
 
-<p><strong>NOTE:</strong> Yes, this is dense.</p>
-
-<p>It summarizes a 560 page book.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td>"12 factors" are guidelines.</td>
+</tr>
+<tr>
+<td><abbr title="MULTI-TENANT"><img class="emoji" alt="office" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f3e2.png"></abbr></td>
+<td>They help make our product multi-tenant aware.</td>
+</tr>
+<tr>
+<td><abbr title="SCALE"><img class="emoji" alt="rocket" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f680.png"></abbr></td>
+<td>They help many things.</td>
+</tr>
+<tr>
+<td><abbr title="HELP"><img class="emoji" alt="sos" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f198.png"></abbr></td>
+<td>mouseover icons when they are not clear.</td>
+</tr>
+</tbody>
+</table>
 
 </section>
 <section>
@@ -31,7 +44,9 @@
 
 </section>
 <section>
-
+<aside class="notes">- lock down our data to prevent mistakes, while increasing sharing.
+- separate the infrastructre configuration from app configuration
+</aside>
 <table>
 <thead>
 <tr>
@@ -82,24 +97,24 @@
 <tr>
 <th></th>
 <th></th>
-<th>Extras</th>
+<th>Extra improvements</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><abbr title="UX"><img class="emoji" alt="sunflower" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f33b.png"></abbr></td>
 <td><abbr title="APPLIANCE"><img class="emoji" alt="tv" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4fa.png"></abbr></td>
-<td>add appliances</td>
+<td>easier to add appliances</td>
 </tr>
 <tr>
 <td><abbr title="UX"><img class="emoji" alt="sunflower" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f33b.png"></abbr></td>
 <td><abbr title="APPLIANCE"><img class="emoji" alt="tv" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4fa.png"></abbr></td>
-<td>Easier upgrades</td>
+<td>easier to upgrade appliances</td>
 </tr>
 <tr>
 <td><abbr title="UX"><img class="emoji" alt="sunflower" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f33b.png"></abbr></td>
 <td><abbr title="APPLIANCE"><img class="emoji" alt="tv" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4fa.png"></abbr></td>
-<td>diagnose problems</td>
+<td>easier to diagnose problems</td>
 </tr>
 <tr>
 <td><abbr title="SCALE"><img class="emoji" alt="rocket" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f680.png"></abbr></td>
@@ -582,7 +597,7 @@ TODO: <abbr title="CODE"><img class="emoji" alt="gem" src="https://assets-cdn.gi
 <td>MIQ</td>
 <td>
 <code>schema.rb</code>, api, keys</td>
-<td><abbr title="YES"><img class="emoji" alt="ballot_box_with_check" src="https://assets-cdn.github.com/images/icons/emoji/unicode/2611.png"></abbr></td>
+<td>YES</td>
 </tr>
 <tr>
 <td><abbr title="CONFIG"><img class="emoji" alt="abcd" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f521.png"></abbr></td>
@@ -754,7 +769,7 @@ TODO: <abbr title="CODE"><img class="emoji" alt="gem" src="https://assets-cdn.gi
 <td><abbr title="APPLIANCE"><img class="emoji" alt="tv" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4fa.png"></abbr></td>
 <td>read only?</td>
 <td></td>
-<td><abbr title="YES"><img class="emoji" alt="ballot_box_with_check" src="https://assets-cdn.github.com/images/icons/emoji/unicode/2611.png"></abbr></td>
+<td>YES</td>
 </tr>
 <tr>
 <td><abbr title="DATA"><img class="emoji" alt="dvd" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4c0.png"></abbr></td>
@@ -1205,7 +1220,8 @@ At the very least, just don't introduce state into the wrong place.</p>
 <p>Every algorithm has assumptions, inputs, and process.
 12 factors simply names them and shares how they work together.</p>
 
-
+<p><em>[<img class="emoji" alt="ballot_box_with_check" src="https://assets-cdn.github.com/images/icons/emoji/unicode/2611.png">]: YES
+*</em></p>
 
 </section>
 </section>
