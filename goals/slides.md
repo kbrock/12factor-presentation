@@ -1,17 +1,19 @@
 # MULTI-TENANT Multi-tenancy
+Leveraging 12 factor application guidelines
 ---
-# Summary
-- We want to make our app multi-tenant aware.
-- "12 factors" are guidelines.
-- They help make our product multi-tenant aware.
-- They also help in other areas as well.
----
-**NOTE:** Yes, this is dense.
-
-It summarizes a 560 page book.
+||Summary
+---|---
+|  |"12 factors" are guidelines.
+|MULTI-TENANT|They help make our product multi-tenant aware.
+|SCALE|They help many things.
+|HELP|mouseover icons when they are not clear.
 ***
 # MULTI-TENANT Goals
 ---
+```notes
+- lock down our data to prevent mistakes, while increasing sharing.
+- separate the infrastructre configuration from app configuration
+```
 | | |providers and tenants| | |
 ---|---|---|---|---
 DATA|CONSTRAINED|(prevent mistakes)    |UNCONSTRAINED|share
@@ -19,11 +21,11 @@ CONFIG|SEPARATE|infrastructure vs app  |DELETE|FILE
 CODE|CONSTRAINED|automate              |CONSTRAINED|gems
 LOGS|SEPARATE|aggregate                |CONSTRAINED|ROOT
 ---
-|  |   |Extras
+|  |   |Extra improvements
 ---|---|---
-UX|APPLIANCE|add appliances
-UX|APPLIANCE|Easier upgrades
-UX|APPLIANCE|diagnose problems
+UX|APPLIANCE|easier to add appliances
+UX|APPLIANCE|easier to upgrade appliances
+UX|APPLIANCE|easier to diagnose problems
 SCALE||MEASURE MESSAGE BUS
 DEBT|CODE|SEPARATE
 ***
@@ -386,4 +388,5 @@ Every algorithm has assumptions, inputs, and process.
 *[:door:]: API
 *[:tophat:]: Red Hat
 *[:moneybag:]: DEBT
-***
+*[:sos:]: HELP
+**
