@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+<title>Slides</title>
+
+<meta name="description" content="">
+<meta name="author" content="">
+<meta name="generator" content="reveal-ck 3.1.0">
+
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+<link rel="stylesheet" href="css/reveal.css">
+<link rel="stylesheet" href="css/theme/kblack.css" id="theme">
+
+<!-- Code syntax highlighting -->
+<link rel="stylesheet" href="lib/css/zenburn.css">
+
+<link rel="stylesheet" href="css/reveal-ck.css">
+
+<link rel="stylesheet" href="css/slides.css">
+<link rel="stylesheet" href="css/theme/kblack.css">
+
+<!-- Printing and PDF exports -->
+<script>
+  var link = document.createElement( 'link' );
+  link.rel = 'stylesheet';
+  link.type = 'text/css';
+  link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+  document.getElementsByTagName( 'head' )[0].appendChild( link );
+</script>
+
+<!--[if lt IE 9]>
+<script src="lib/js/html5shiv.js"></script>
+<![endif]-->
+
+  </head>
+
+  <body>
+    <div class="reveal">
+  <!-- Any section element inside of this container is displayed as a slide -->
+  <div class="slides">
+    <section>
+
+<h1>What is Multi-tenancy?</h1>
+
+</section>
+<section>
+
+<h1>Overview</h1>
+
+<ul>
+<li>high level business cases.</li>
+<li>transle to something we can “do”.</li>
+<li>high level list of actionable items.</li>
+</ul>
+
+</section>
+<section>
+<section>
+
+<p>John Hardy</p>
+
+</section>
+<section>
+
+<blockquote>
+<p>The CF product architecture needs to accommodate the multi-tenancy <em>use cases</em> of today’s service providers and enterprises.</p>
+
+<p>Product Multi-Tenancy refers to the CF product supporting more than one organization with <em>separate authentication</em>, <em>branding</em> and <em>security access controls</em>, though at the same time supporting the notion of <em>sharing</em> between tenants.</p>
+</blockquote>
+
+</section>
+<section>
+<aside class="notes">I originally assume tenancy means thick wall. Sharring suggests it is different than that.
+</aside>
+<ul>
+<li>many LDAPs</li>
+<li>easier branding (get into the database)</li>
+<li>many branding</li>
+<li>better security access control
+
+<ul>
+<li>tigher</li>
+<li>sharing (with holes)</li>
+</ul>
+</li>
+</ul>
+
+</section>
+<section>
+
+<blockquote>
+<p>Allow to start managing who can access and the scope of what they can manage in a normalized way
+-- trello</p>
+</blockquote>
+
+</section>
+</section>
+
+<section>
+<section>
+
+<p>Loic</p>
+
+</section>
+<section>
+
+<blockquote>
+<p>Tenant = A container used to <em>group</em> or <em>isolate</em> <em>resources</em> and <em>identity</em>.</p>
+</blockquote>
+
+</section>
+<section>
+
+<p><em>resources</em> and <em>identity</em> is an rbac statement:</p>
+
+<blockquote>
+<p>I want improved rbac.</p>
+</blockquote>
+
+<ul>
+<li>
+<em>grouping resources</em> so you can more easily put rbac around them.</li>
+<li>
+<em>isolate resources</em> is the result of applying rbac.</li>
+<li>
+<em>grouping identity</em> so you can apply the other side of rbac.</li>
+</ul>
+
+</section>
+<section>
+
+<blockquote>
+<p>Enterprise and Cloud Service Providers need a simple way to <em>isolate environments</em>, and provide <em>more granular permissions</em> including specifics delegations to users and admins.</p>
+
+<p>Specific groups of people, subdivision of a company or external customer (CSP case), will have access to <em>“cloud” environments</em> and will be able to manage it.</p>
+</blockquote>
+
+</section>
+<section>
+
+<ul>
+<li>
+<em>isolate enviroments</em> for better faith in rbac. (harder to screw up)</li>
+<li>
+<em>more granular permissions</em> by better rbac.</li>
+<li>
+<em>cloud</em> means rbac is tight enough that we can have multiple customers in one install.</li>
+</ul>
+
+</section>
+</section>
+
+<section>
+<section>
+
+<h1>Translation</h1>
+
+<p>(mine)</p>
+
+</section>
+<section>
+
+<p>Support Cloud Service Providers and Enterprise</p>
+
+<blockquote>
+<p>Once you roll CFME out to larger customers,
+a procedure that was once a minor inconvenience, now
+becomes a burden.</p>
+
+<p>We need to implement these missing or incomplete features.</p>
+</blockquote>
+
+</section>
+<section>
+<aside class="notes">
+You can not get "multi-tenancy."
+You can add features that make multi-tenancy work better.
+</aside>
+<p>Multi-tenancy is a collection of usability features:</p>
+
+<ul>
+<li>all features can be implemented on their own.</li>
+<li>all features benifit all customers. <small>(some more than others)</small>
+</li>
+<li>all features have been on our radar for a while.</li>
+</ul>
+
+</section>
+<section>
+
+<p>There are a few features that are not strictly usability:</p>
+
+<ul>
+<li>support more than 1 dynamic brand</li>
+<li>add reserves and quotas </li>
+<li>admins for a group.</li>
+</ul>
+
+</section>
+<section>
+
+<p>Now it is a priority to nail these down.</p>
+
+</section>
+</section>
+<section>
+
+<h1>Separating feature requests into separate projects</h1>
+
+</section>
+<section>
+<section>
+
+<h1>Branding</h1>
+
+</section>
+<section>
+
+<ul>
+<li>branding, customizations from <code>vmdb.yml</code>, <code>less</code>, and <code>png</code>s.</li>
+<li>get brand into the database</li>
+<li>allow multiple brands</li>
+<li>allow a session id (<code>brand_id</code> or <code>tenant_it</code>) to switch between them.</li>
+</ul>
+
+</section>
+</section>
+
+<section>
+<section>
+
+<h1>groups</h1>
+
+</section>
+<section>
+
+<ul>
+<li>a tenant is a container use to group or isolate resources and identity.</li>
+<li>request: user can be in multiple tenants</li>
+<li>request: have a tenant drop down in upper right corner</li>
+<li>All group functionality and a bit more</li>
+<li>Add that extra functionality to groups and sub-tenants</li>
+</ul>
+
+</section>
+<section>
+
+<ul>
+<li>groups support and at top level and or at second layer.</li>
+<li>groups support same use cases we currently use tagging.</li>
+<li>do we need to introduce a new tenant concept?</li>
+</ul>
+
+</section>
+</section>
+
+<section>
+<section>
+
+<h1>authentication</h1>
+
+</section>
+<section>
+
+<h1>authentication known</h1>
+
+<ul>
+<li>a (sub)tenant can share parent's LDAP (via <abbr title="Organizational Unit">OU</abbr>)</li>
+<li>a tenant can have own LDAP</li>
+<li>everything that a "tenant" gets, "group" gets too.</li>
+<li>also want another layer, "business group"</li>
+<li>move LDAP configuration off "appliance" and into database.</li>
+</ul>
+
+</section>
+<section>
+
+<h1>authentication unknown</h1>
+
+<ul>
+<li>How much user management belongs is in CFME?</li>
+<li>The implications of adding another grouping mechanism.</li>
+<li>What is the problem with existing grouping mechanism?</li>
+<li>How to create first tenant (and ldap link)?</li>
+<li>Customer support concerns: "suport all existing setups"</li>
+</ul>
+
+</section>
+</section>
+<section>
+
+<h1>quota and reserves</h1>
+
+<p>TODO</p>
+
+</section>
+<section>
+
+<h1>reports</h1>
+
+<p>Similar to branding, reports are stored on disk. These need to move into the database and rbac needs to be improved. Also like branding, there need to exist multiple versions of each report, one per tenant (but probably per </p>
+
+</section>
+<section>
+
+<h1>Automate</h1>
+
+<p>This is not mentioned, but this needs to have better versioning and locked down for security for a multi-tenant setup</p>
+
+
+
+</section>
+
+  </div>
+</div>
+
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.js"></script>
+
+<script>
+  (function() {
+  function extend( a, b ) {
+    for(var i in b) {
+      a[i] = b[i];
+    }
+  }
+  var baseOptions = {
+    transition: 'default',
+
+    dependencies: [
+      { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+      { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      { src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+      { src: 'plugin/zoom-js/zoom.js', async: true },
+      { src: 'plugin/notes/notes.js', async: true }
+    ]
+  };
+  var configOptions = {"controls":true,"progress":true,"history":true,"center":true}
+  var initializeOptions = {};
+  extend(initializeOptions, baseOptions);
+  extend(initializeOptions, configOptions);
+  Reveal.initialize(initializeOptions);
+})();
+
+</script>
+
+  </body>
+</html>
