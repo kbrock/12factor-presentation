@@ -1,0 +1,433 @@
+<section>
+
+<h1>Separating Code from Data</h1>
+
+<p>(5 minute timer starts now)</p>
+
+</section>
+<section>
+
+<h1>Overview</h1>
+
+<ul>
+<li>Hypothesis</li>
+<li>Componets of a process</li>
+<li>Facets:
+
+<ul>
+<li>What it contains?</li>
+<li>When can it change?</li>
+<li>Where can it be stored?</li>
+<li>Who can change it?</li>
+</ul>
+</li>
+<li>Handling discrepencies</li>
+</ul>
+
+</section>
+<section>
+
+<h1>Mechanics</h1>
+
+<ul>
+<li>Use space to go through slides</li>
+<li>Slide is first</li>
+<li>Story / speaker notes is next</li>
+</ul>
+
+</section>
+<section>
+<section>
+
+<h1>Hypothesis</h1>
+
+<ul>
+<li>Facets are linked.</li>
+<li>Choose one facet, get others for "free".</li>
+<li>Embrace and leverage this.</li>
+</ul>
+
+</section>
+<section>
+
+<p>Sometimes it is easy to visualize separating data by different facets. (e.g.: where data is stored or who can modify it)</p>
+
+<p>So use any facet which works best for describing your process, and embrace the other facets that come along with that decision.</p>
+
+</section>
+<section>
+
+<p>Because some facets are not orthogonal, but rather dependent.</p>
+
+<p>And believe it or not, it is far easier to change your view of the facets than to change the links.</p>
+
+</section>
+<section>
+
+<p>When a process has 2 values for a facet, sub-divide the process so there is a process in each facet. (e.g.: If this is both data and configuration, create a configuration app and data app. Or at least have 2 different sections of your app.)</p>
+
+</section>
+</section>
+
+<section>
+<section>
+
+<h1>Components</h1>
+
+<table>
+<thead>
+<tr>
+<th>type</th>
+<th>example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CODE</td>
+<td>algorithm ruby</td>
+</tr>
+<tr>
+<td>DATA</td>
+<td>input, output</td>
+</tr>
+<tr>
+<td>Events</td>
+<td>logs, metrics</td>
+</tr>
+<tr>
+<td>CONFIG</td>
+<td>URL reference to DB or STREAM</td>
+</tr>
+<tr>
+<td>CONFIG</td>
+<td>PARAM to tweaks to algorithm</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+<section>
+
+<p>Every process has an algorithm (code)</p>
+
+<p>The purpose of the process is to take input information (data) and either change it or generate more data.</p>
+
+<p>While processing, events are generated which represent changes, significant findings, logs, and metrics.</p>
+
+<p>Configuration allows an installation to tweak the algorithm, and to specify the source of the data and streams.</p>
+
+</section>
+</section>
+
+<section>
+<section>
+
+<h1>Dependencies</h1>
+
+<p>The contract between the multiple components.
+Use version numbers to state api or contract version.</p>
+
+<ol>
+<li>Be sure everything is setup correctly.</li>
+<li>Be able to easily upgrade (not in lock-step)</li>
+<li>Maybe be able to run 2 different versions at the same time while upgrading.</li>
+</ol>
+
+<table>
+<thead>
+<tr>
+<th>CODE</th>
+<th></th>
+<th>depends upon</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CODE</td>
+<td>Gemfile, rpmspec</td>
+<td>External code (via fork or gem)</td>
+</tr>
+<tr>
+<td>DATA</td>
+<td>URL</td>
+<td>url to external resource, (keep version # in code)</td>
+</tr>
+<tr>
+<td>DATA</td>
+<td>migrations</td>
+<td>columns, keys in blobs (not lock step)</td>
+</tr>
+<tr>
+<td>Events</td>
+<td>logs, metrics</td>
+<td></td>
+</tr>
+<tr>
+<td>CONFIG</td>
+<td>keys and params present</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+</section>
+<section>
+
+<p>Location greatly effects ability to nail down depenency</p>
+<aside class="notes">- Easiest if everything is stored on disk in code and upgraded at once.
+- Easiest if the API is versioned / backwards compatible
+- code depends upon url, if there is negotiation, hardcode that negotiation in the code since that is where the dependency lies. upgrade code, don't change configuration.
+</aside>
+<table>
+<thead>
+<tr>
+<th>location</th>
+<th>dependency</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>URL</td>
+<td>Format of url, api version (keys returned)</td>
+</tr>
+<tr>
+<td>db</td>
+<td>table schma, schema-less: keys present in blobs</td>
+</tr>
+<tr>
+<td>code</td>
+<td>Gemfile, rpm spec (via ruby or fork)</td>
+</tr>
+<tr>
+<td>configuration</td>
+<td>keys, parameters (have defaults)</td>
+</tr>
+<tr>
+<td>rpc</td>
+<td>queue, message bus, fork (keys and actions - class name, method name, parameter)</td>
+</tr>
+<tr>
+<td>schema</td>
+<td>data structures is code?</td>
+</tr>
+<tr>
+<td>config</td>
+<td>keys and their meanings are hard coded in the code</td>
+</tr>
+</tbody>
+</table>
+<aside class="notes">config is up for grabs in terms of where to store
+but it needs to be changed at deploy / boot time only
+
+The data structures and the primary keys are code. Whether on the message bus, database blob
+
+</aside>
+</section>
+</section>
+<section>
+
+<h1>Where it is stored</h1>
+
+<table>
+<thead>
+<tr>
+<th>where</th>
+<th>type</th>
+<th>notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DISK</td>
+<td>CODE</td>
+<td>think git too</td>
+</tr>
+<tr>
+<td>DB</td>
+<td>DATA</td>
+<td>input, output</td>
+</tr>
+<tr>
+<td>STREAM</td>
+<td>Events</td>
+<td>logstash / graphite / metrics table</td>
+</tr>
+<tr>
+<td>ENV</td>
+<td>CONFIG</td>
+<td>URL reference to DB or STREAM</td>
+</tr>
+<tr>
+<td>ENV</td>
+<td>CONFIG</td>
+<td>PARAM to tweaks to algorithm</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+<section>
+
+<table>
+<thead>
+<tr>
+<th>type</th>
+<th>location</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Code</td>
+<td>disk (git)</td>
+</tr>
+<tr>
+<td>CONFIG</td>
+<td>environment (or yml file / cloudinit)</td>
+</tr>
+<tr>
+<td>data</td>
+<td>database</td>
+</tr>
+<tr>
+<td>events</td>
+<td>stream (graphite, RHCI: elastic search)</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+<section>
+
+<h1>When can they change</h1>
+<aside class="notes">disposable says never update code only replace. We don't have to be that strict.
+
+- Want to discourage monkey patching (customer editing gemfiles/yml/rb)
+- Changing code changes dependencies (config, database)
+- not reproducable. Did they remember to 
+- can we provide a build process (automate deployment) so it is consistent?
+- caveat: can move code and configuration to first boot
+</aside>
+<table>
+<thead>
+<tr>
+<th>relation</th>
+<th>when it can change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Code</td>
+<td>install time</td>
+</tr>
+<tr>
+<td>configuration</td>
+<td>deploy time</td>
+</tr>
+<tr>
+<td>database</td>
+<td>always changing (schema static)</td>
+</tr>
+<tr>
+<td>stream</td>
+<td>write only (constantly flowing)</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+<section>
+
+<h1>User can change them?</h1>
+
+<p>type|who changes
+CODE|manageiq
+CONFIG|admin
+DATA|tenants
+STREAMS|processes</p>
+
+</section>
+<section>
+
+<h1>Process in charge of managing these</h1>
+<aside class="notes">Docker / heroku phrasing
+
+TODO: rework
+</aside>
+<table>
+<thead>
+<tr>
+<th>type</th>
+<th>heroku</th>
+<th>docker</th>
+<th>cfme</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CODE -&gt; disk</td>
+<td>build</td>
+<td>pack</td>
+<td>dockfile</td>
+</tr>
+<tr>
+<td>manifest</td>
+<td>build pack</td>
+<td>docker file</td>
+<td>kickstart</td>
+</tr>
+<tr>
+<td>CONFIG -&gt; ENV</td>
+<td>deploy</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>DATA</td>
+<td>runner</td>
+<td>appliance</td>
+<td></td>
+</tr>
+<tr>
+<td>STREAM</td>
+<td>runner</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+</section>
+<section>
+
+<h1>Can we break these rules?</h1>
+
+<p>Yes! Please do.</p>
+
+<ul>
+<li>Just take into account what is provided by each layer and </li>
+<li>If any of the entries in the grid are different, and it is giving you problems, reserve the right to move it back. Or at least add the needed functionality</li>
+</ul>
+
+<p>example 1:
+data on disk|write code to syncing filesystem changes
+database changes|write code to support 2 different schemas
+code changes|write code to enforce dependencies</p>
+
+<p>example 2:
+automate: version cfme api (service objects), version automate base code, version customer automate code. lock down code when running</p>
+
+<h1>when rules are mushy?</h1>
+
+<p>Data for one set of code is config for another.</p>
+
+<p>ex 1:
+I can edit my ruby code all the time. it is data.
+But when I run that code, in the context of the process, the CLI arguments and the running code is static.</p>
+
+<p>example 2:
+provider url is data in config app
+provider url is config in ems worker</p>
+
+<p>cut up the app on that line. Make sure the config does not change while you are running.</p>
+
+</section>
