@@ -9,5 +9,4 @@ requires:
 - "tilt/erb"
 - "html/pipeline/abbr"
 - "html/pipeline/dot_filter"
-title: <%= ENV["PWD"].split("/").last.gsub(/[-_]/," ").split(" ").map(&:capitalize).join(" ") %>
 #prefer_unicode: true

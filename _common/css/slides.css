@@ -22,10 +22,21 @@ body .reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
   }  
 }
 
+.reveal section img.emoji {
+    position: relative;
+    background: none;
+    border: 0;
+    box-shadow: none;
+    vertical-align:middle;
+    margin: 0;
+    margin-bottom:.25em;
+    display:inline-block;
+}
+
 /*
 EmojiSymbols Font (c)blockworks - Kenichi Kaneko
 http://emojisymbols.com/
-*/
+
 @font-face {
   font-family: "EmojiSymbols";
   src: url('EmojiSymbols-Regular.woff') format('woff');
@@ -42,4 +53,4 @@ http://emojisymbols.com/
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
+*/
