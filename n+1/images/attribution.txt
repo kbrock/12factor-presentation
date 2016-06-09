@@ -1,0 +1,3 @@
+ruby.svg => https://www.efficientrails.com/img/ruby.svg
+ROR.svg: https://www.thinkful.com/courses/learn-ruby-on-rails-online/
+ruby-icon.png: http://rubyconf.org/about

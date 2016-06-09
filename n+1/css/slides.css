@@ -1,0 +1,56 @@
+.reveal cite {
+  font-style: italic;
+}
+
+.reveal blockquote em {
+  color: #c8c871;
+}
+
+.reveal em {
+  color: #c8c871;
+}
+
+/* not working */
+body .reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
+  font-transform: capitalize !important;
+}
+
+@media print {
+  /* overriding .reveal section img */
+  .reveal section h1 img, .reveal section h3 img {
+    display: inline;
+  }  
+}
+
+.reveal section img.emoji {
+    position: relative;
+    background: none;
+    border: 0;
+    box-shadow: none;
+    vertical-align:middle;
+    margin: 0;
+    margin-bottom:.25em;
+    display:inline-block;
+}
+
+/*
+EmojiSymbols Font (c)blockworks - Kenichi Kaneko
+http://emojisymbols.com/
+
+@font-face {
+  font-family: "EmojiSymbols";
+  src: url('EmojiSymbols-Regular.woff') format('woff');
+  text-decoration: none;
+  font-style: normal;
+}
+
+.reveal .emoji {
+  position: relative;
+  display: inline-block;
+  font-family: "EmojiSymbols";
+  line-height: 1;
+  font-size: 2.5em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+*/

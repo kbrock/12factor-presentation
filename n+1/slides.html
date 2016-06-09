@@ -1,0 +1,1013 @@
+<section>
+<section>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ruby</td>
+<td>slow</td>
+</tr>
+<tr>
+<td>DB</td>
+<td>fast<small>*</small>
+</td>
+</tr>
+<tr>
+<td>Use</td>
+<td>Rails</td>
+</tr>
+</tbody>
+</table>
+
+<p><small>* except when it's not</small></p>
+
+</section>
+<section>
+
+<p>I love ruby.
+It is expressive.
+It is easy to write code.
+But we send all this data over the wire. And this makes it slow.</p>
+
+<p>Now, the database is fast
+And, it is very powerful
+But not all of us know how SQL
+And not all of us like convoluted "optimized" code</p>
+
+<p>And even with this convoluted code, you have to be so vigilent to try and avoid pitfalls
+but we all fall into them.</p>
+
+<p>Lets extend rails.
+And lets demand more from rails.
+The code and performance we have been getting up until now is atrocious
+But while we need to improve rails
+We really also need to clean up our code</p>
+
+</section>
+</section>
+
+<section>
+<section>
+
+<p>DB Layout</p>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="255pt" height="322pt" viewBox="0.00 0.00 255.08 322.00">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 318)">
+<title>%3</title>
+<!-- ems -->
+<g id="ems" class="node">
+<title>ems</title>
+<polygon fill="transparent" stroke="#d4d4d4" stroke-width="1.2" points="117.558,-314 52.5581,-314 52.5581,-278 117.558,-278 117.558,-314"></polygon>
+<text text-anchor="middle" x="85.0581" y="-291.8" font-family="Helvetica,sans-Serif" font-size="14.00" fill="#d4d4d4">Ems (1)</text>
+</g>
+<!-- hosts -->
+<g id="hosts" class="node">
+<title>hosts</title>
+<polygon fill="transparent" stroke="#d4d4d4" stroke-width="1.2" points="129.417,-242 40.699,-242 40.699,-206 129.417,-206 129.417,-242"></polygon>
+<text text-anchor="middle" x="85.0581" y="-219.8" font-family="Helvetica,sans-Serif" font-size="14.00" fill="#d4d4d4">Hosts (200)</text>
+</g>
+<!-- ems&#45;&gt;hosts -->
+<g id="edge1" class="edge">
+<title>ems-&gt;hosts</title>
+<path fill="none" stroke="#d4d4d4" d="M85.0581,-277.831C85.0581,-268.608 85.0581,-257.295 85.0581,-247.425"></path>
+<polygon fill="#d4d4d4" stroke="#d4d4d4" points="86.8082,-247.413 85.0581,-242.413 83.3082,-247.413 86.8082,-247.413"></polygon>
+</g>
+<!-- vms -->
+<g id="vms" class="node">
+<title>vms</title>
+<polygon fill="transparent" stroke="#d4d4d4" stroke-width="1.2" points="247.092,-242 147.024,-242 147.024,-206 247.092,-206 247.092,-242"></polygon>
+<text text-anchor="middle" x="197.058" y="-219.8" font-family="Helvetica,sans-Serif" font-size="14.00" fill="#d4d4d4">VMs (10,000)</text>
+</g>
+<!-- hosts&#45;&gt;vms -->
+<g id="edge2" class="edge">
+<title>hosts-&gt;vms</title>
+<path fill="none" stroke="#d4d4d4" d="M129.246,-224C133.405,-224 137.565,-224 141.725,-224"></path>
+<polygon fill="#d4d4d4" stroke="#d4d4d4" points="141.993,-225.75 146.993,-224 141.993,-222.25 141.993,-225.75"></polygon>
+</g>
+<!-- hardwares -->
+<g id="hardwares" class="node">
+<title>hardwares</title>
+<path fill="transparent" stroke="#d4d4d4" stroke-width="1.2" d="M12,-81.5C12,-81.5 158.116,-81.5 158.116,-81.5 164.116,-81.5 170.116,-87.5 170.116,-93.5 170.116,-93.5 170.116,-157.5 170.116,-157.5 170.116,-163.5 164.116,-169.5 158.116,-169.5 158.116,-169.5 12,-169.5 12,-169.5 6,-169.5 0,-163.5 0,-157.5 0,-157.5 0,-93.5 0,-93.5 0,-87.5 6,-81.5 12,-81.5"></path>
+<text text-anchor="middle" x="85.0581" y="-154.3" font-family="Helvetica,sans-Serif" font-size="14.00" fill="#d4d4d4">Hardwares (10,200)</text>
+<polyline fill="none" stroke="#d4d4d4" stroke-width="1.2" points="0,-147.5 170.116,-147.5 "></polyline>
+<text text-anchor="middle" x="85.0581" y="-132.3" font-family="Helvetica,sans-Serif" font-size="14.00" fill="#d4d4d4">cores*</text>
+<polyline fill="none" stroke="#d4d4d4" stroke-width="1.2" points="0,-125.5 170.116,-125.5 "></polyline>
+<text text-anchor="middle" x="85.0581" y="-110.3" font-family="Helvetica,sans-Serif" font-size="14.00" fill="#d4d4d4">cpu*</text>
+<polyline fill="none" stroke="#d4d4d4" stroke-width="1.2" points="0,-103.5 170.116,-103.5 "></polyline>
+<text text-anchor="middle" x="85.0581" y="-88.3" font-family="Helvetica,sans-Serif" font-size="14.00" fill="#d4d4d4">(aggregate_cpu_speed)*</text>
+</g>
+<!-- hosts&#45;&gt;hardwares -->
+<g id="edge3" class="edge">
+<title>hosts-&gt;hardwares</title>
+<path fill="none" stroke="#d4d4d4" d="M85.0581,-205.934C85.0581,-197.072 85.0581,-185.921 85.0581,-174.77"></path>
+<polygon fill="#d4d4d4" stroke="#d4d4d4" points="86.8082,-174.654 85.0581,-169.654 83.3082,-174.654 86.8082,-174.654"></polygon>
+</g>
+<!-- opt -->
+<g id="opt" class="node">
+<title>opt</title>
+<polygon fill="transparent" stroke="#d4d4d4" stroke-width="0.2" points="31.9307,-0.5 31.9307,-44.5 138.186,-44.5 138.186,-0.5 31.9307,-0.5"></polygon>
+<text text-anchor="middle" x="85.0581" y="-29.3" font-family="Helvetica,sans-Serif" font-size="14.00" fill="#d4d4d4">* is optional</text>
+<polyline fill="none" stroke="#d4d4d4" stroke-width="0.2" points="31.9307,-22.5 138.186,-22.5 "></polyline>
+<text text-anchor="middle" x="85.0581" y="-7.3" font-family="Helvetica,sans-Serif" font-size="14.00" fill="#d4d4d4">() is calculated</text>
+</g>
+<!-- hardwares&#45;&gt;opt -->
+<g id="edge4" class="edge">
+<title>hardwares-&gt;opt</title>
+<path fill="none" stroke="transparent" d="M85.0581,-81.221C85.0581,-70.5478 85.0581,-59.4525 85.0581,-49.818"></path>
+<polygon fill="transparent" stroke="transparent" points="86.8082,-49.6277 85.0581,-44.6277 83.3082,-49.6277 86.8082,-49.6277"></polygon>
+</g>
+</g>
+</svg>
+</section>
+<section>
+
+<p>Db Layout<small>*</small></p>
+<pre><code class="ruby">class ExtManagementSystem &lt; ActiveRecord::Base
+  has_many :hosts
+end
+
+class Host &lt; ActiveRecord::Base
+  has_one :hardware
+end
+
+class Hardware &lt; ActiveRecord::Base
+  def aggregate_cpu_speed
+    cpu_total_cores * cpu_speed if cpu_total_cores &amp;&amp; cpu_speed
+  end
+end
+</code></pre>
+<p><small>* Ruby version</small></p>
+
+</section>
+</section>
+
+<section>
+<section>
+
+<p>Not using <code>:through</code></p>
+<pre><code class="ruby">class ExtManagementSystem
+  def aggregate_cpu_total_cores
+    hosts.map(&amp;:hardware).map(&amp;:cpu_total_cores).compact.sum
+  end
+end
+ems = ExtManagementSystem.first ; bookend("query") { ems.aggregate_cpu_total_cores }
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align: right">ms</th>
+<th style="text-align: right">bytes</th>
+<th style="text-align: right">objects</th>
+<th style="text-align: right">queries</th>
+<th style="text-align: right">query(ms)</th>
+<th style="text-align: right">rows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right">257.5</td>
+<td style="text-align: right">14,990,187</td>
+<td style="text-align: right">172,227</td>
+<td style="text-align: right">201</td>
+<td style="text-align: right">32.3</td>
+<td style="text-align: right">400</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+<section>
+
+<p>Optimizing Not using <code>:through</code></p>
+<pre><code class="ruby">class ExtManagementSystem
+  def aggregate_cpu_total_cores
+    MiqPreloader.preload(hosts, :hardware)
+    hosts.map(&amp;:hardware).map(&amp;:cpu_total_cores).sum
+  end
+end
+ems = ExtManagementSystem.first ; bookend("query") { ems.aggregate_cpu_total_cores }
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align: right">ms</th>
+<th style="text-align: right">bytes</th>
+<th style="text-align: right">objects</th>
+<th style="text-align: right">queries</th>
+<th style="text-align: right">query(ms)</th>
+<th style="text-align: right">rows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right">63.5</td>
+<td style="text-align: right">2,223,793</td>
+<td style="text-align: right">17,048</td>
+<td style="text-align: right">2</td>
+<td style="text-align: right">9.9</td>
+<td style="text-align: right">400</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+<section>
+
+<p>Flipping Not using <code>:through</code></p>
+<pre><code class="ruby">class ExtManagementSystem
+  def aggregate_cpu_total_cores
+    Hardware.where(:host_id =&gt; host_ids).pluck(:cpu_total_cores).sum
+  end
+end
+ems = ExtManagementSystem.first ; bookend("query") { ems.aggregate_cpu_total_cores }
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align: right">ms</th>
+<th style="text-align: right">bytes</th>
+<th style="text-align: right">objects</th>
+<th style="text-align: right">queries</th>
+<th style="text-align: right">query(ms)</th>
+<th style="text-align: right">rows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right">50.3</td>
+<td style="text-align: right">225,818</td>
+<td style="text-align: right">4,176</td>
+<td style="text-align: right">2</td>
+<td style="text-align: right">2.1</td>
+<td style="text-align: right">400</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+</section>
+<section>
+
+<p>Using <code>:through</code></p>
+<pre><code class="ruby">class ExtManagementSystem
+  has_many :hardwares, :through =&gt; :hosts
+
+  def aggregate_cpu_total_cores
+    hardwares.map(&amp;:cpu_total_cores).sum
+  end
+end
+ems = ExtManagementSystem.first ; bookend("query") { ems.aggregate_cpu_total_cores }
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align: right">ms</th>
+<th style="text-align: right">bytes</th>
+<th style="text-align: right">objects</th>
+<th style="text-align: right">queries</th>
+<th style="text-align: right">query(ms)</th>
+<th style="text-align: right">rows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right">54.0</td>
+<td style="text-align: right">767,267</td>
+<td style="text-align: right">4,541</td>
+<td style="text-align: right">1</td>
+<td style="text-align: right">5.9</td>
+<td style="text-align: right">200</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+<section>
+
+<p>Not using <code>sum</code></p>
+<pre><code class="ruby">class ExtManagementSystem
+  has_many :hardwares, :through =&gt; :hosts
+  def aggregate_cpu_total_cores
+    hardwares.map(&amp;:cpu_total_cores).sum
+  end
+end
+ems = ExtManagementSystem.first ; bookend("cores-third") { ems.aggregate_cpu_total_cores }
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align: right">ms</th>
+<th style="text-align: right">bytes</th>
+<th style="text-align: right">objects</th>
+<th style="text-align: right">queries</th>
+<th style="text-align: right">query(ms)</th>
+<th style="text-align: right">rows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right">34.3</td>
+<td style="text-align: right">767,267</td>
+<td style="text-align: right">4,541</td>
+<td style="text-align: right">1</td>
+<td style="text-align: right">4.2</td>
+<td style="text-align: right">200</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+<section>
+
+<p>Using <code>sum</code></p>
+<pre><code class="ruby">class ExtManagementSystem
+  has_many :hardwares, :through =&gt; :hosts
+  def aggregate_cpu_total_cores
+    hardwares.sum(:cpu_total_cores)
+  end
+end
+ems = ExtManagementSystem.first ; bookend("cores-third") { ems.aggregate_cpu_total_cores }
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align: right">ms</th>
+<th style="text-align: right">bytes</th>
+<th style="text-align: right">objects</th>
+<th style="text-align: right">queries</th>
+<th style="text-align: right">query(ms)</th>
+<th style="text-align: right">rows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right">30.1</td>
+<td style="text-align: right">96,355</td>
+<td style="text-align: right">1,242</td>
+<td style="text-align: right">1</td>
+<td style="text-align: right">0.6</td>
+<td style="text-align: right"></td>
+</tr>
+</tbody>
+</table>
+
+</section>
+<section>
+
+<p>Not using <code>sum</code><small>*</small></p>
+<pre><code class="ruby">class ExtManagementSystem
+  def aggregate_cpu_speed
+    hardwares.map(&amp;:aggregate_cpu_speed).sum
+  end
+end
+
+class Hardware
+  def aggregate_cpu_speed
+    (cpu_total_cores * cpu_speed) if cpu_total_cores &amp;&amp; cpu_speed
+  end
+end
+ems = ExtManagementSystem.first ; bookend("cores-third") { ems.aggregate_cpu_speed }
+</code></pre>
+<p><small>* Virtual Attributes</small></p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align: right">ms</th>
+<th style="text-align: right">bytes</th>
+<th style="text-align: right">objects</th>
+<th style="text-align: right">queries</th>
+<th style="text-align: right">query(ms)</th>
+<th style="text-align: right">rows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right">41.5</td>
+<td style="text-align: right">783,499</td>
+<td style="text-align: right">4,744</td>
+<td style="text-align: right">1</td>
+<td style="text-align: right">3.7</td>
+<td style="text-align: right">200</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+<section>
+<section>
+
+<p>Using <code>:sum</code><small>*<small></small></small></p>
+<pre><code class="ruby">class ExtManagementSystem
+  def aggregate_cpu_speed
+    hardwares.sum(:aggregate_cpu_speed)
+  end
+end
+
+class Hardware
+  virtual_attribute :aggregate_cpu_speed, :integer,
+    :arel =&gt; -&gt;(t) {t.grouping(t[:cpu_total_cores] * t[:cpu_speed])}
+
+  def aggregate_cpu_speed
+    (cpu_total_cores * cpu_speed) if cpu_total_cores &amp;&amp; cpu_speed
+  end
+end
+ems = ExtManagementSystem.first ; bookend("cores-third") { ems.aggregate_cpu_speed }
+</code></pre>
+<p><small>* Virtual Attributes</small></p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align: right">ms</th>
+<th style="text-align: right">bytes</th>
+<th style="text-align: right">objects</th>
+<th style="text-align: right">queries</th>
+<th style="text-align: right">query(ms)</th>
+<th style="text-align: right">rows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right">31.0</td>
+<td style="text-align: right">97,147</td>
+<td style="text-align: right">1,251</td>
+<td style="text-align: right">1</td>
+<td style="text-align: right">0.5</td>
+<td style="text-align: right">1</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+<section>
+
+<p>Actual<small>*</small></p>
+<pre><code class="ruby">class ExtManagementSystem
+  def aggregate_cpu_speed
+    hardwares.sum(Hardware.arel_attribute(:aggregate_cpu_speed))
+  end
+end
+</code></pre>
+<p><small>* outstanding PR</small></p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align: right">ms</th>
+<th style="text-align: right">bytes</th>
+<th style="text-align: right">objects</th>
+<th style="text-align: right">queries</th>
+<th style="text-align: right">query(ms)</th>
+<th style="text-align: right">rows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right">31.0</td>
+<td style="text-align: right">97,147</td>
+<td style="text-align: right">1,251</td>
+<td style="text-align: right">1</td>
+<td style="text-align: right">0.5</td>
+<td style="text-align: right">1</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+<section>
+
+<p>Not using <code>where</code>, <code>count</code></p>
+<pre><code class="ruby">class ExtManagementSystem
+  def vm_count_by_state(state)
+    vms.inject(0) { |t, vm| vm.power_state == state ? t + 1 : t }
+  end
+end
+class VmOrTemplate
+  def power_state
+    POWER_STATES[raw_power_state] || 'unknown'
+  end
+end
+ems = ExtManagementSystem.first ; bookend("cores-third") { ems.vm_count_by_state("off") }
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align: right">ms</th>
+<th style="text-align: right">bytes</th>
+<th style="text-align: right">objects</th>
+<th style="text-align: right">queries</th>
+<th style="text-align: right">query(ms)</th>
+<th style="text-align: right">rows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right">1,000.1</td>
+<td style="text-align: right">17,704,609+</td>
+<td style="text-align: right">622,669+</td>
+<td style="text-align: right">1</td>
+<td style="text-align: right">772.7</td>
+<td style="text-align: right">10,000</td>
+</tr>
+</tbody>
+</table>
+
+<p><small>* 143,533 freed objects</small></p>
+
+</section>
+<section>
+
+<p>Using <code>count</code></p>
+<pre><code class="ruby">class ExtManagementSystem
+  POWER_STATES= {"poweredOff"=&gt;"off", "poweredOn"=&gt;"on"}
+  def vm_count_by_state(state)
+    raw_power_state = POWER_STATES.invert[state]
+    vms.where(:raw_power_state =&gt; raw_power_state).count
+  end
+end
+class VmOrTemplate
+  def power_state
+    POWER_STATES[raw_power_state] || 'unknown'
+  end
+end
+ems = ExtManagementSystem.first ; bookend("cores-third") { ems.vm_count_by_state("off") }
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align: right">ms</th>
+<th style="text-align: right">bytes</th>
+<th style="text-align: right">objects</th>
+<th style="text-align: right">queries</th>
+<th style="text-align: right">query(ms)</th>
+<th style="text-align: right">rows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right">43.3</td>
+<td style="text-align: right">137,607</td>
+<td style="text-align: right">1,774</td>
+<td style="text-align: right">1</td>
+<td style="text-align: right">6.1</td>
+<td style="text-align: right">1</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+<section>
+
+<p>Using Rbac<br>
+Recipies to avoid</p>
+
+</section>
+<section>
+
+<p>Rbac implementation<small>*</small></p>
+<pre><code class="ruby">class Rbac
+  def self.search(options)
+    targets = options[:targets]
+    if targets.kind_of(Array)
+      targets = targets.first.class.where(:id =&gt; targets) # &lt;= HERE
+    end
+    targets.where(magic)
+  end
+end
+</code></pre>
+<p><small>* Not really</small></p>
+
+</section>
+<section>
+
+<p>Base Code</p>
+<pre><code class="ruby">class Code
+  def calling_method
+    do_stuff(VmOrTemplate.where(:boot_time =&gt; nil)).to_a ; nil
+  end
+
+  def do_stuff(targets)
+    Rbac.filtered(targets)
+  end
+end
+bookend { Code.new.calling_method }
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align: right">ms</th>
+<th style="text-align: right">bytes</th>
+<th style="text-align: right">objects</th>
+<th style="text-align: right">queries</th>
+<th style="text-align: right">query(ms)</th>
+<th style="text-align: right">rows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right">834.8</td>
+<td style="text-align: right">66,396,630</td>
+<td style="text-align: right">482,710</td>
+<td style="text-align: right">4</td>
+<td style="text-align: right">748.9</td>
+<td style="text-align: right">10,000</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+<section>
+
+<p>"optimized" code calls *</p>
+<pre><code class="ruby">class Code
+  def calling_method
+    do_stuff(VmOrTemplate.where(:boot_time =&gt; nil)).to_a ; nil
+  end
+
+  def do_stuff(targets)
+    return if targets.blank?
+    Rbac.filtered(targets)
+  end
+end
+GC.start ; bookend { Code.new.calling_method }
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align: right">ms</th>
+<th style="text-align: right">bytes</th>
+<th style="text-align: right">objects</th>
+<th style="text-align: right">queries</th>
+<th style="text-align: right">query(ms)</th>
+<th style="text-align: right">rows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right">1,536.3</td>
+<td style="text-align: right">66,416,957</td>
+<td style="text-align: right">963,491+</td>
+<td style="text-align: right">5</td>
+<td style="text-align: right">1,443.3</td>
+<td style="text-align: right">20,000</td>
+</tr>
+</tbody>
+</table>
+
+<p><small>* 278,052 freed objects</small>
+<small>* for some definition of optimized</small></p>
+
+</section>
+<section>
+
+</section>
+</section>
+<section>
+
+<p>this includes:</p>
+<pre><code class="ruby">class Code
+  def calling_method
+    do_stuff(VmOrTemplate.where(:boot_time =&gt; nil)).to_a ; nil
+  end
+
+  def do_stuff(targets)
+    targets = Array.wrap(targets)
+    Rbac.search(:targets =&gt; targets)
+  end
+end
+GC.start ; bookend { Code.new.calling_method }
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align: right">ms</th>
+<th style="text-align: right">bytes</th>
+<th style="text-align: right">objects</th>
+<th style="text-align: right">queries</th>
+<th style="text-align: right">query(ms)</th>
+<th style="text-align: right">rows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right">2,031.3</td>
+<td style="text-align: right">123,483,752</td>
+<td style="text-align: right">1,013,499</td>
+<td style="text-align: right">5</td>
+<td style="text-align: right">1,549.4</td>
+<td style="text-align: right">20,000</td>
+</tr>
+</tbody>
+</table>
+
+<p><small>* 252,994 freed objects</small></p>
+
+</section>
+<section>
+
+<ul>
+<li><code>to_a</code></li>
+<li><code>compact</code></li>
+<li>
+<code>blank?</code>, <code>any?</code>, <code>empty?</code>, <code>count</code>
+</li>
+<li><code>Array.wrap()</code></li>
+<li><code>first.class</code></li>
+</ul>
+
+</section>
+<section>
+
+<p>Not using <code>OR</code></p>
+<pre><code class="ruby">class Code
+  def calling_method
+    targets = Host.where(:smart =&gt; 1)
+    targets += Host.where(:power_state =&gt; "on")
+    targets = targets.uniq.compact
+    Rbac.filtered(targets)
+  end
+end
+GC.start ; bookend { Code.new.calling_method }
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align: right">ms</th>
+<th style="text-align: right">bytes</th>
+<th style="text-align: right">objects</th>
+<th style="text-align: right">queries</th>
+<th style="text-align: right">query (ms)</th>
+<th style="text-align: right">rows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right">53.4</td>
+<td style="text-align: right">3,034,615</td>
+<td style="text-align: right">22,888</td>
+<td style="text-align: right">6</td>
+<td style="text-align: right">20.3</td>
+<td style="text-align: right">600</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+<section>
+
+<p>Using <code>OR</code></p>
+<pre><code class="ruby">class Code
+  def calling_method
+    targets = Host.where(:smart =&gt; 1).or(
+              Host.where(:power_state =&gt; "on"))
+    Rbac.filtered(targets)
+  end
+end
+GC.start ; bookend { Code.new.calling_method }
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align: right">ms</th>
+<th style="text-align: right">bytes</th>
+<th style="text-align: right">objects</th>
+<th style="text-align: right">queries</th>
+<th style="text-align: right">query(ms)</th>
+<th style="text-align: right">rows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right">29.4</td>
+<td style="text-align: right">171,010</td>
+<td style="text-align: right">2,220</td>
+<td style="text-align: right">3</td>
+<td style="text-align: right">0.8</td>
+<td style="text-align: right"></td>
+</tr>
+</tbody>
+</table>
+
+</section>
+<section>
+<section>
+
+<p>Not using <code>AND</code></p>
+<pre><code class="ruby">class Code
+  def calling_method
+    possible_targets = [Host.where(:smart =&gt; 1),
+                        Host.where(:power_state =&gt; "on")]
+    targets = possible_targets.inject(nil) do |a, hosts|
+      a.nil? ? hosts : a &amp; hosts
+    end
+    # Rbac.filtered(targets)
+  end
+end
+GC.start ; bookend { Code.new.calling_method }
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align: right">ms</th>
+<th style="text-align: right">bytes</th>
+<th style="text-align: right">objects</th>
+<th style="text-align: right">queries</th>
+<th style="text-align: right">query(ms)</th>
+<th style="text-align: right">rows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right">42.0</td>
+<td style="text-align: right">1,886,341</td>
+<td style="text-align: right">13,673</td>
+<td style="text-align: right">2</td>
+<td style="text-align: right">12.6</td>
+<td style="text-align: right">400</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+<section>
+
+<p>Not using <code>AND</code> with Rbac</p>
+<pre><code class="ruby">class Code
+  def calling_method
+    possible_targets = [Host.where(:smart =&gt; 1),
+                        Host.where(:power_state =&gt; "on")]
+    targets = possible_targets.inject(nil) do |a, hosts|
+      a.nil? ? hosts : a &amp; hosts
+    end
+    Rbac.filtered(targets)
+  end
+end
+GC.start ; bookend { Code.new.calling_method }
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align: right">ms</th>
+<th style="text-align: right">bytes</th>
+<th style="text-align: right">objects</th>
+<th style="text-align: right">queries</th>
+<th style="text-align: right">query(ms)</th>
+<th style="text-align: right">rows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right">58.5</td>
+<td style="text-align: right">3,031,237</td>
+<td style="text-align: right">22,895</td>
+<td style="text-align: right">6</td>
+<td style="text-align: right">21.0</td>
+<td style="text-align: right">600</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+</section>
+
+<section>
+<section>
+
+<p>Using <code>AND</code></p>
+<pre><code class="ruby">class Code
+  def calling_method
+    targets = Host.where(:smart =&gt; 1, :power_state =&gt; "on")
+    # Rbac.filtered(targets).to_a
+  end
+end
+GC.start ; bookend { Code.new.calling_method }
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align: right">ms</th>
+<th style="text-align: right">bytes</th>
+<th style="text-align: right">objects</th>
+<th style="text-align: right">queries</th>
+<th style="text-align: right">query(ms)</th>
+<th style="text-align: right">rows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right">34.9</td>
+<td style="text-align: right">887,308</td>
+<td style="text-align: right">6,668</td>
+<td style="text-align: right">1</td>
+<td style="text-align: right">6.0</td>
+<td style="text-align: right">200</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+<section>
+
+<p>Using <code>AND</code> with Rbac</p>
+<pre><code class="ruby">class Code
+  def calling_method
+    targets = Host.where(:smart =&gt; 1, :power_state =&gt; "on")
+    Rbac.filtered(targets).to_a
+  end
+end
+GC.start ; bookend { Code.new.calling_method }
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align: right">ms</th>
+<th style="text-align: right">bytes</th>
+<th style="text-align: right">objects</th>
+<th style="text-align: right">queries</th>
+<th style="text-align: right">query(ms)</th>
+<th style="text-align: right">rows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right">34.2</td>
+<td style="text-align: right">1,042,494</td>
+<td style="text-align: right">8,590</td>
+<td style="text-align: right">4</td>
+<td style="text-align: right">6.5</td>
+<td style="text-align: right">200</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+</section>
+<section>
+
+<ul>
+<li>
+<abbr title="DBMS"><img class="emoji" alt="dvd" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4c0.png"></abbr> <code>id[]</code>
+</li>
+<li>
+<abbr title="DBMS"><img class="emoji" alt="dvd" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4c0.png"></abbr> sort by ruby column (w/ limit / offset)</li>
+<li>
+<abbr title="DBMS"><img class="emoji" alt="dvd" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4c0.png"></abbr> <code>MiqExpression :supported_by_sql =&gt; false</code>
+</li>
+</ul>
+
+</section>
+<section>
+<section>
+
+<p>Not using subqueries</p>
+<pre><code class="ruby">class ExtManagementSystem &lt; ActiveRecord::Base
+  def aggregate_cpu_total_cores
+    ids = hosts.pluck(:id)
+    Hardware.where(:host_id =&gt; ids).pluck(:cpu_total_cores).sum
+  end
+end
+</code></pre>
+</section>
+<section>
+<pre><code class="ruby">class ExtManagementSystem &lt; ActiveRecord::Base
+  def aggregate_cpu_total_cores
+    ids = hosts.select(:id).collect(&amp;:id)
+    Hardware.where(:host_id =&gt; ids).pluck(:cpu_total_cores).sum
+  end
+end
+</code></pre>
+</section>
+</section>
+<section>
+
+<p>Using sub queries</p>
+<pre><code class="ruby">class ExtManagementSystem &lt; ActiveRecord::Base
+  def aggregate_cpu_total_cores
+    ids = hosts.select(:id)
+    Hardware.where(:host_id =&gt; ids).pluck(:cpu_total_cores).sum
+  end
+end
+</code></pre>
+</section>
+<section>
+
+<ul>
+<li>
+<abbr title="RUBY"><img class="emoji" alt="gem" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f48e.png"></abbr> <code>MiqPreloader.preload</code>
+</li>
+<li>
+<abbr title="RUBY"><img class="emoji" alt="gem" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f48e.png"></abbr> <code>sort</code> (w/o limit)</li>
+</ul>
+
+</section>
+<section>
+
+
+
+</section>
