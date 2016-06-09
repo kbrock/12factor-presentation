@@ -19,7 +19,7 @@
 </td>
 </tr>
 <tr>
-<td>Use</td>
+<td>use</td>
 <td>Rails</td>
 </tr>
 </tbody>
@@ -51,7 +51,28 @@ We really also need to clean up our code</p>
 
 </section>
 </section>
+<section>
 
+<table>
+<thead>
+<tr>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Keenan</td>
+</tr>
+<tr>
+<td>Performance team</td>
+</tr>
+<tr>
+<td><a href="https://github.com/kbrock" class="user-mention">@kbrock</a></td>
+</tr>
+</tbody>
+</table>
+
+</section>
 <section>
 <section>
 
@@ -155,8 +176,11 @@ end
     hosts.map(&amp;:hardware).map(&amp;:cpu_total_cores).compact.sum
   end
 end
-ems = ExtManagementSystem.first ; bookend("query") { ems.aggregate_cpu_total_cores }
 </code></pre>
+<!--
+  ems = ExtManagementSystem.first ; bookend("query") { ems.aggregate_cpu_total_cores }
+-->
+
 <table>
 <thead>
 <tr>
@@ -183,15 +207,18 @@ ems = ExtManagementSystem.first ; bookend("query") { ems.aggregate_cpu_total_cor
 </section>
 <section>
 
-<p>Optimizing Not using <code>:through</code></p>
+<p>Optimizing not using <code>:through</code></p>
 <pre><code class="ruby">class ExtManagementSystem
   def aggregate_cpu_total_cores
     MiqPreloader.preload(hosts, :hardware)
     hosts.map(&amp;:hardware).map(&amp;:cpu_total_cores).sum
   end
 end
-ems = ExtManagementSystem.first ; bookend("query") { ems.aggregate_cpu_total_cores }
 </code></pre>
+<!--
+  ems = ExtManagementSystem.first ; bookend("query") { ems.aggregate_cpu_total_cores }
+-->
+
 <table>
 <thead>
 <tr>
@@ -218,14 +245,17 @@ ems = ExtManagementSystem.first ; bookend("query") { ems.aggregate_cpu_total_cor
 </section>
 <section>
 
-<p>Flipping Not using <code>:through</code></p>
+<p>Flipping not using <code>:through</code></p>
 <pre><code class="ruby">class ExtManagementSystem
   def aggregate_cpu_total_cores
     Hardware.where(:host_id =&gt; host_ids).pluck(:cpu_total_cores).sum
   end
 end
-ems = ExtManagementSystem.first ; bookend("query") { ems.aggregate_cpu_total_cores }
 </code></pre>
+<!--
+  ems = ExtManagementSystem.first ; bookend("query") { ems.aggregate_cpu_total_cores }
+-->
+
 <table>
 <thead>
 <tr>
@@ -261,8 +291,11 @@ ems = ExtManagementSystem.first ; bookend("query") { ems.aggregate_cpu_total_cor
     hardwares.map(&amp;:cpu_total_cores).sum
   end
 end
-ems = ExtManagementSystem.first ; bookend("query") { ems.aggregate_cpu_total_cores }
 </code></pre>
+<!--
+  ems = ExtManagementSystem.first ; bookend("query") { ems.aggregate_cpu_total_cores }
+-->
+
 <table>
 <thead>
 <tr>
@@ -296,8 +329,11 @@ ems = ExtManagementSystem.first ; bookend("query") { ems.aggregate_cpu_total_cor
     hardwares.map(&amp;:cpu_total_cores).sum
   end
 end
-ems = ExtManagementSystem.first ; bookend("cores-third") { ems.aggregate_cpu_total_cores }
 </code></pre>
+<!--
+  ems = ExtManagementSystem.first ; bookend("cores-third") { ems.aggregate_cpu_total_cores }
+-->
+
 <table>
 <thead>
 <tr>
@@ -331,8 +367,11 @@ ems = ExtManagementSystem.first ; bookend("cores-third") { ems.aggregate_cpu_tot
     hardwares.sum(:cpu_total_cores)
   end
 end
-ems = ExtManagementSystem.first ; bookend("cores-third") { ems.aggregate_cpu_total_cores }
 </code></pre>
+<!--
+  ems = ExtManagementSystem.first ; bookend("cores-third") { ems.aggregate_cpu_total_cores }
+-->
+
 <table>
 <thead>
 <tr>
@@ -371,8 +410,11 @@ class Hardware
     (cpu_total_cores * cpu_speed) if cpu_total_cores &amp;&amp; cpu_speed
   end
 end
-ems = ExtManagementSystem.first ; bookend("cores-third") { ems.aggregate_cpu_speed }
 </code></pre>
+<!--
+  ems = ExtManagementSystem.first ; bookend("cores-third") { ems.aggregate_cpu_speed }
+-->
+
 <p><small>* Virtual Attributes</small></p>
 
 <table>
@@ -417,8 +459,11 @@ class Hardware
     (cpu_total_cores * cpu_speed) if cpu_total_cores &amp;&amp; cpu_speed
   end
 end
-ems = ExtManagementSystem.first ; bookend("cores-third") { ems.aggregate_cpu_speed }
 </code></pre>
+<!--
+  ems = ExtManagementSystem.first ; bookend("cores-third") { ems.aggregate_cpu_speed }
+-->
+
 <p><small>* Virtual Attributes</small></p>
 
 <table>
@@ -493,8 +538,11 @@ class VmOrTemplate
     POWER_STATES[raw_power_state] || 'unknown'
   end
 end
-ems = ExtManagementSystem.first ; bookend("cores-third") { ems.vm_count_by_state("off") }
 </code></pre>
+<!--
+  ems = ExtManagementSystem.first ; bookend("cores-third") { ems.vm_count_by_state("off") }
+-->
+
 <table>
 <thead>
 <tr>
@@ -518,7 +566,7 @@ ems = ExtManagementSystem.first ; bookend("cores-third") { ems.vm_count_by_state
 </tbody>
 </table>
 
-<p><small>* 143,533 freed objects</small></p>
+<p><small>+ 143,533 freed objects</small></p>
 
 </section>
 <section>
@@ -536,8 +584,11 @@ class VmOrTemplate
     POWER_STATES[raw_power_state] || 'unknown'
   end
 end
-ems = ExtManagementSystem.first ; bookend("cores-third") { ems.vm_count_by_state("off") }
 </code></pre>
+<!--
+  ems = ExtManagementSystem.first ; bookend("cores-third") { ems.vm_count_by_state("off") }
+-->
+
 <table>
 <thead>
 <tr>
@@ -562,15 +613,16 @@ ems = ExtManagementSystem.first ; bookend("cores-third") { ems.vm_count_by_state
 </table>
 
 </section>
+</section>
 <section>
 
-<p>Using Rbac<br>
+<p>Using RBAC<br>
 Recipies to avoid</p>
 
 </section>
 <section>
 
-<p>Rbac implementation<small>*</small></p>
+<p>RBAC implementation<small>*</small></p>
 <pre><code class="ruby">class Rbac
   def self.search(options)
     targets = options[:targets]
@@ -578,6 +630,10 @@ Recipies to avoid</p>
       targets = targets.first.class.where(:id =&gt; targets) # &lt;= HERE
     end
     targets.where(magic)
+  end
+
+  def self.filtered(targets, options)
+    search(options.merge(:targets =&gt; target))
   end
 end
 </code></pre>
@@ -596,8 +652,11 @@ end
     Rbac.filtered(targets)
   end
 end
-bookend { Code.new.calling_method }
 </code></pre>
+<!--
+  bookend { Code.new.calling_method }
+-->
+
 <table>
 <thead>
 <tr>
@@ -635,8 +694,11 @@ bookend { Code.new.calling_method }
     Rbac.filtered(targets)
   end
 end
-GC.start ; bookend { Code.new.calling_method }
 </code></pre>
+<!--
+  bookend { Code.new.calling_method }
+-->
+
 <table>
 <thead>
 <tr>
@@ -660,14 +722,14 @@ GC.start ; bookend { Code.new.calling_method }
 </tbody>
 </table>
 
-<p><small>* 278,052 freed objects</small>
+<p><small>+ 278,052 freed objects</small>
 <small>* for some definition of optimized</small></p>
 
 </section>
 <section>
 
 </section>
-</section>
+<section>
 <section>
 
 <p>this includes:</p>
@@ -681,8 +743,11 @@ GC.start ; bookend { Code.new.calling_method }
     Rbac.search(:targets =&gt; targets)
   end
 end
-GC.start ; bookend { Code.new.calling_method }
 </code></pre>
+<!--
+  bookend { Code.new.calling_method }
+-->
+
 <table>
 <thead>
 <tr>
@@ -698,7 +763,7 @@ GC.start ; bookend { Code.new.calling_method }
 <tr>
 <td style="text-align: right">2,031.3</td>
 <td style="text-align: right">123,483,752</td>
-<td style="text-align: right">1,013,499</td>
+<td style="text-align: right">1,013,499+</td>
 <td style="text-align: right">5</td>
 <td style="text-align: right">1,549.4</td>
 <td style="text-align: right">20,000</td>
@@ -706,7 +771,7 @@ GC.start ; bookend { Code.new.calling_method }
 </tbody>
 </table>
 
-<p><small>* 252,994 freed objects</small></p>
+<p><small>+ 252,994 freed objects</small></p>
 
 </section>
 <section>
@@ -733,8 +798,11 @@ GC.start ; bookend { Code.new.calling_method }
     Rbac.filtered(targets)
   end
 end
-GC.start ; bookend { Code.new.calling_method }
 </code></pre>
+<!--
+  bookend { Code.new.calling_method }
+-->
+
 <table>
 <thead>
 <tr>
@@ -769,8 +837,11 @@ GC.start ; bookend { Code.new.calling_method }
     Rbac.filtered(targets)
   end
 end
-GC.start ; bookend { Code.new.calling_method }
 </code></pre>
+<!--
+  bookend { Code.new.calling_method }
+-->
+
 <table>
 <thead>
 <tr>
@@ -795,7 +866,7 @@ GC.start ; bookend { Code.new.calling_method }
 </table>
 
 </section>
-<section>
+</section>
 <section>
 
 <p>Not using <code>AND</code></p>
@@ -809,8 +880,11 @@ GC.start ; bookend { Code.new.calling_method }
     # Rbac.filtered(targets)
   end
 end
-GC.start ; bookend { Code.new.calling_method }
 </code></pre>
+<!--
+  bookend { Code.new.calling_method }
+-->
+
 <table>
 <thead>
 <tr>
@@ -837,7 +911,7 @@ GC.start ; bookend { Code.new.calling_method }
 </section>
 <section>
 
-<p>Not using <code>AND</code> with Rbac</p>
+<p>Not using <code>AND</code> with RBAC</p>
 <pre><code class="ruby">class Code
   def calling_method
     possible_targets = [Host.where(:smart =&gt; 1),
@@ -848,8 +922,11 @@ GC.start ; bookend { Code.new.calling_method }
     Rbac.filtered(targets)
   end
 end
-GC.start ; bookend { Code.new.calling_method }
 </code></pre>
+<!--
+  bookend { Code.new.calling_method }
+-->
+
 <table>
 <thead>
 <tr>
@@ -874,9 +951,11 @@ GC.start ; bookend { Code.new.calling_method }
 </table>
 
 </section>
-</section>
-
 <section>
+<section>
+
+</section>
+</section>
 <section>
 
 <p>Using <code>AND</code></p>
@@ -886,8 +965,11 @@ GC.start ; bookend { Code.new.calling_method }
     # Rbac.filtered(targets).to_a
   end
 end
-GC.start ; bookend { Code.new.calling_method }
 </code></pre>
+<!--
+  bookend { Code.new.calling_method }
+-->
+
 <table>
 <thead>
 <tr>
@@ -914,15 +996,18 @@ GC.start ; bookend { Code.new.calling_method }
 </section>
 <section>
 
-<p>Using <code>AND</code> with Rbac</p>
+<p>Using <code>AND</code> with RBAC</p>
 <pre><code class="ruby">class Code
   def calling_method
     targets = Host.where(:smart =&gt; 1, :power_state =&gt; "on")
     Rbac.filtered(targets).to_a
   end
 end
-GC.start ; bookend { Code.new.calling_method }
 </code></pre>
+<!--
+  bookend { Code.new.calling_method }
+-->
+
 <table>
 <thead>
 <tr>
@@ -947,7 +1032,7 @@ GC.start ; bookend { Code.new.calling_method }
 </table>
 
 </section>
-</section>
+<section>
 <section>
 
 <ul>
@@ -962,7 +1047,7 @@ GC.start ; bookend { Code.new.calling_method }
 </ul>
 
 </section>
-<section>
+</section>
 <section>
 
 <p>Not using subqueries</p>
@@ -983,10 +1068,10 @@ end
 end
 </code></pre>
 </section>
-</section>
+<section>
 <section>
 
-<p>Using sub queries</p>
+<p>Using subqueries</p>
 <pre><code class="ruby">class ExtManagementSystem &lt; ActiveRecord::Base
   def aggregate_cpu_total_cores
     ids = hosts.select(:id)
@@ -1010,4 +1095,5 @@ end
 
 
 
+</section>
 </section>
