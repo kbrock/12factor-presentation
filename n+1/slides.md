@@ -65,11 +65,9 @@ Db Layout<small>*</small>
 class ExtManagementSystem < ActiveRecord::Base
   has_many :hosts
 end
-
 class Host < ActiveRecord::Base
   has_one :hardware
 end
-
 class Hardware < ActiveRecord::Base
   def aggregate_cpu_speed
     cpu_total_cores * cpu_speed if cpu_total_cores && cpu_speed
@@ -262,7 +260,7 @@ end
 |      ---:|     ---:|     ---:|  ---:|     ---:|      ---:|
 |     31.0 |  97,147 |   1,251 |    1 |     0.5 |        1 |
 
----
+***
 
 Not using `where`, `count`
 
@@ -313,7 +311,7 @@ end
 |      ---:|     ---:|     ---:|  ---:|     ---:|      ---:|
 |     43.3 | 137,607 |   1,774 |    1 |     6.1 |        1 |
 
-***
+---
 
 Using RBAC<br>
 Recipies to avoid
@@ -324,11 +322,9 @@ RBAC implementation<small>*</small>
 ```ruby
 class Rbac
   def self.search(options)
-    targets = options[:targets]
-    if targets.kind_of(Array)
-      targets = targets.first.class.where(:id => targets) # <= HERE
-    end
-    targets.where(magic)
+    tgts = options[:targets]    
+    tgts = tgts.first.class.where(:id => tgts) if tgts.kind_of(Array)
+    tgts.where(magic)
   end
 
   def self.filtered(targets, options)
@@ -384,9 +380,8 @@ end
 
 <small>+ 278,052 freed objects</small>
 <small>* for some definition of optimized</small>
----
 
-***
+---
 this includes:
 
 ```ruby
